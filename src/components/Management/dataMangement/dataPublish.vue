@@ -28,12 +28,10 @@
           </el-col>
           <el-col  :xs="6" :sm="8" :md="9" :lg="9" :xl="10" >
             <el-input placeholder="资源名称" v-model="postObj.basic_info.NAME"></el-input>
-          </el-col> -->
-
-       
+          </el-col>-->
         </div>
         <el-row :gutter="10" type="flex">
-             <!-- <el-col :xs="5" :sm="4" :md="4" :lg="2" :xl="2">
+          <!-- <el-col :xs="5" :sm="4" :md="4" :lg="2" :xl="2">
             <span  style="padding:0 10px"  class="requiredItem">影像时间</span>
           </el-col>
           <el-col :xs="11" :sm="8" :md="4" :lg="6" :xl="6">
@@ -44,12 +42,12 @@
               align="right"
               :picker-options="pickerOptions"
             ></el-date-picker>
-          </el-col> -->
+          </el-col>-->
 
-          <el-col :xs="0" :sm="3" :md="4" :lg="2" :xl="2">
+          <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="2">
             <span class="requiredItem">卫星数据源</span>
           </el-col>
-          <el-col :xs="3" :sm="3" :md="4" :lg="6" :xl="6">
+          <el-col :xs="4" :sm="4" :md="4" :lg="6" :xl="6">
             <el-select
               v-model="value1"
               @change="SateliteHandle"
@@ -63,16 +61,28 @@
                 :key="item.value"
                 :label="item.satelite"
                 :value="item.value"
-                
               ></el-option>
             </el-select>
           </el-col>
 
-          <el-col :xs="0" :sm="3" :md="4" :lg="2" :xl="2">
+          <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="2">
             <span class="requiredItem">传感器类型</span>
           </el-col>
-          <el-col :xs="3" :sm="3" :md="4" :lg="6" :xl="6">
+          <el-col :xs="4" :sm="4" :md="4" :lg="6" :xl="6">
             <!-- <el-cascader :options="subjectOptions" :show-all-levels="false"></el-cascader> -->
+            <el-select placeholder="请选择" v-model="value2" @change="handleChange" clearable>
+              <el-option
+                v-for="item in SensorOption"
+                :key="item.value"
+                :label="item.value"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <!-- <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="2">
+            <span class="requiredItem">波段</span>
+          </el-col>-->
+          <!-- <el-col :xs="4" :sm="4" :md="4" :lg="6" :xl="6">
             <el-select placeholder="请选择" v-model="value2" @change="handleChange" clearable>
               <el-option
                 v-for="item in SensorOption"
@@ -82,7 +92,7 @@
                  
               ></el-option>
             </el-select>
-          </el-col>
+          </el-col>-->
         </el-row>
 
         <el-row :gutter="10" type="flex">
@@ -97,7 +107,6 @@
                 :key="item.value"
                 :label="item.value"
                 :value="item.value"
-                 
               ></el-option>
             </el-select>
           </el-col>
@@ -113,7 +122,6 @@
                 :key="item.value"
                 :label="item.value"
                 :value="item.value"
-                
               ></el-option>
             </el-select>
           </el-col>
@@ -127,15 +135,37 @@
         </el-row>
       </div>
 
+      <el-table
+        ref="multipleTable"
+        :data="rasterList"
+        tooltip-effect="dark"
+        style="width: 100%"
+        border:true
+        max-height="60%"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"></el-table-column>
+        <!-- <el-table-column
+            label="日期"
+            width="120">
+            <template slot-scope="scope">{{ scope.row.date }}</template>
+        </el-table-column>-->
+        <el-table-column prop="filename" label="文件名称"></el-table-column>
+        <el-table-column prop="filepath" label="文件路径"></el-table-column>
+      </el-table>
+      <div style="margin: 20px">
+        <!-- <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button> -->
+        <el-button @click="toggleSelection()">取消选择</el-button>
+      </div>
 
-  <p style="text-align: center; margin: 0 0 20px">数据列表</p>
+      <!-- <p style="text-align: center; margin: 0 0 20px">数据列表</p>
   <div style="text-align: center">
     <el-transfer
       style="text-align: left; display: inline-block"
       v-model="value"
       filterable
-      :left-default-checked="[2, 3]"
-      :right-default-checked="[1]"
+      :left-default-checked="[1,2,3]"
+      :right-default-checked="[]"
       :render-content="renderFunc"
       :titles="['原始数据', '预上传数据']"
       :button-texts="['到左边', '到右边']"
@@ -145,21 +175,17 @@
       }"
       @change="handleTranferChange"
       :data="data">
-      <!-- <el-button class="transfer-footer" slot="left-footer" size="small">操作</el-button>
-      <el-button class="transfer-footer" slot="right-footer" size="small">操作</el-button> -->
+    
     </el-transfer>
-  </div>
+      </div>-->
       <!-- 上传数据文档、缩略图等文件 -->
       <div class="upload_box">
- 
         <el-row justify="end" type="flex" class="public_box">
           <el-button @click="resFiled()">重置</el-button>
           <el-button @click="publicData()">发布数据</el-button>
         </el-row>
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -169,7 +195,7 @@ export default {
   data() { 
     return {
         user_name:window.atob(window.sessionStorage.getItem("token")),
-        data:[],
+        // data:[],
         ProductList:[],
         value: [1],
         value4: [1],
@@ -245,7 +271,7 @@ export default {
         {
           value: "2",
           satelite: "MODIS",
-          sensor: [{ value: "Terra" }, { value: "Aqua" }],
+          sensor: [{ value: "Terra/Aqua" }],
           Tresolution: [{ value: "1天" }],
           Sresolution: [
             { value: "250m" },
@@ -259,11 +285,12 @@ export default {
           sensor: [{ value: "ETM+" }],
           Tresolution: [{ value: "16天" }],
           Sresolution: [{ value: "15m" }, { value: "30m" }],
+          //Bands:[{ value: "band1" },{ value: "band2" },{ value: "band3" },{ value: "band4" },{ value: "band5" },{ value: "band6" },{ value: "band7" },{ value: "band8" },{ value: "band9" },{ value: "band10" },{ value: "band11" }]
         },
         {
           value: "4",
           satelite: "Landsat8",
-          sensor: [{ value: "OLI" }],
+          sensor: [{ value: "OLI/TIRS" }],
           Tresolution: [{ value: "16天" }],
           Sresolution: [{ value: "15m" }, { value: "30m" }],
         },
@@ -293,7 +320,7 @@ export default {
       value2: "", //传感器
       value3: "", //时间分辨率
       value4: "", //空间分辨率
-     
+      multipleSelection:[],
     };
   },
   watch: {
@@ -311,21 +338,34 @@ export default {
     //this.getTime(1, 0);
   },
   methods: {
+        toggleSelection(rows) {
+          if (rows) {
+            rows.forEach(row => {
+              this.$refs.multipleTable.toggleRowSelection(row);
+            });
+          } else {
+            this.$refs.multipleTable.clearSelection();
+          }
+        },
 
+        handleSelectionChange(val) {
+          this.multipleSelection = val;
+          console.log(this.multipleSelection);
+        },
         
-        generateData(){
-        const data = [];
+      //   generateData(){
+      //   const data = [];
        
-        for (let i = 0; i < this.rasterList.length; i++) {
-          console.log(this.rasterList[i].filename);
-          data.push({
-            key: i,
-            label: `备选项 ${ this.rasterList[i].filename }`,
-            // disabled: i % 4 === 0
-          });
-        }
-        return data;
-      },
+      //   for (let i = 0; i < this.rasterList.length; i++) {
+      //     console.log(this.rasterList[i].filename);
+      //     data.push({
+      //       key: i,
+      //       label: `备选项 ${ this.rasterList[i].filename }`,
+      //       // disabled: i % 4 === 0
+      //     });
+      //   }
+      //   return data;
+      // },
     handleChange(value) {
       if(this.value1!=""&&this.value2!=""&&this.value3!=""&&this.value4!=""){
 
@@ -340,47 +380,31 @@ export default {
         .then((res) => {
           console.log(res.data.list);
           this.rasterList = res.data.list;
-          this.data= this.generateData();
+          this.rasterList.forEach(element => {
+            element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
+          });
         });
       }
     },
-    handleTranferChange(value, direction, movedKeys) {
-        console.log(value, direction, movedKeys);
-    },
-    //获取学科数据
-    subjectHandle(value) {
-      if (value == "") {
-        this.postObj.attr_value = [];
-        return;
-      }
-      var tempObj = this.jadgeIsSubJect();
-      if (this.jadgeIsSubJect().flag) {
-        this.postObj.attr_value.splice(this.jadgeIsSubJect().index, 1);
-        for (var i = 0; i < this.subjectOptions.length; i++) {
-          if (this.subjectOptions[i].v_name == value) {
-            var tempID = this.subjectOptions[i].v_id;
-            break;
-          }
-        }
-        this.postObj.attr_value.push({
-          v_id: tempID,
-          v_name: value,
-          v_id_k: 2,
-        });
-      } else {
-        for (var i = 0; i < this.subjectOptions.length; i++) {
-          if (this.subjectOptions[i].v_name == value) {
-            var tempID = this.subjectOptions[i].v_id;
-            break;
-          }
-        }
-        this.postObj.attr_value.push({
-          v_id: tempID,
-          v_name: value,
-          v_id_k: 2,
-        });
-      }
-    },
+    // handleTranferChange(value, direction, movedKeys) {
+    //   /**
+    //    * 拿到右边的数组
+    //    */
+    //   let slectList=[]
+    //   value=value.sort((a,b)=>{return a-b})
+    //   console.log(value,'sort');
+    //   value.forEach((element,index) => {
+    //     if(element==index){
+    //       console.log(element,'ele',index,'index',this.data[index].lable);
+    //       slectList.push(this.data[index].label)
+    //     }
+    //   });
+    //     console.log(slectList);
+    //     // console.log( direction);
+    //     // console.log( movedKeys);
+    //     //console.log(this.value);
+    // },
+
     //获取传感器数据
     SateliteHandle(value) {
       this.value2 = "";
@@ -416,91 +440,7 @@ export default {
       this.postObj.basic_info.up_time = time;
     },
 
-    // 获取学科类别
-
-
-    // 获取文件流数据
-    uploadFile_image(file) {
-      this.fileData.append("file1", file.file);
-    },
-    uploadFile_file(file) {
-      this.fileData.append("file2", file.file);
-    },
-    handlePreview() {},
-    handleRemove1(file, fileList) {
-      this.fileCount1 = 0;
-    },
-    handleRemove2(file, fileList) {
-      this.fileCount2 = 0;
-    },
-    onSuccess() {
-      this.$message.success("文件上传成功");
-    },
-    onError() {
-      this.$message.error("文件上传失败");
-    },
-    // 获得文件列表个数
-    getFileList1(event, file, fileList) {
-      this.fileCount1 = file.length;
-    },
-    // 获取文件列表个数
-    getFileList2(event, file, fileList) {
-      this.fileCount2 = file.length;
-    },
-    // 判断上传类型和大小
-    onBeforeUpload1(file) {
-      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
-      var isfileType = false;
-      if (testmsg == "jpg" || testmsg == "jpeg" || testmsg == "png") {
-        var isfileType = true;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 5;
-      if (!isfileType) {
-        this.$message.error("该文件类型不支持");
-      }
-      if (!isLt2M) {
-        this.$message.error("文件大小不能超过 5M!");
-      }
-      return isfileType && isLt2M;
-    },
-    onBeforeUpload2(file) {
-      this.postObj.basic_info.docname = file.name.substring(
-        0,
-        file.name.lastIndexOf(".")
-      );
-      var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
-      var isfileType = false;
-      if (testmsg == "zip") {
-        var isfileType = true;
-      }
-      const isLt2M = file.size / 1024 / 1024 < 5;
-      if (file.size / 1024 / 1024 < 1) {
-        this.postObj.basic_info.da_size = (file.size / 1024).toFixed(2) + "k";
-      } else {
-        this.postObj.basic_info.da_size =
-          (file.size / 1024 / 1024).toFixed(2) + "M";
-      }
-
-      if (!isfileType) {
-        this.$message.error("该文件类型不支持");
-      }
-      if (!isLt2M) {
-        this.$message.error("文件大小不能超过 5M!");
-      }
-      return isfileType && isLt2M;
-    },
-    handleExceed(files, fileList) {
-      if (fileList.length < 1) {
-        this.$message.warning("请选择文件");
-      }
-      this.$message.warning(
-        `当前限制选择${this.count} 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-
-
+ 
     // 格式化时间范围
     selectYear(val) {
       if (!val) {
@@ -515,131 +455,41 @@ export default {
     },
     // 重置数据
     resFiled() {
-      this.postObj = {
-        // 基础信息表
-        basic_info: {
-          NAME: "", //发布的资源名称
-          sploc: "", //空间位置
-          docname: "", //文件名
-          up_time: "", //上传时间
-          point1_lat: "", //点1的纬度
-          point1_lon: "", //点1的经度
-          point2_lat: "", //点2的纬度
-          point2_lon: "", //点2的经度
-          topic_w1: "", //主题词1
-          topic_w2: "", //主题词2
-          topic_w3: "", //主题词3
-          topic_cfi: "", //主题词分类字段简介
-          da_summ: "", //数据摘要
-          da_size: "", //数据大小
-          da_url: "", //数据附件本地地址
-          up_id: 1, //上传者账号id
-          da_type: -1, //分类外键
-          image: "", //缩略图url
-          uper_name: "", //上传者姓名
-          uper_place: "", //上传者工作单位
-          file_url: "", //数据文档地址
-          sample_url: "", //样例数据地址
-          datm_range: "", //数据时间范围
-          da_source: "", //数据来源
-          da_method: "", //数据产生或加工方法
-          da_projection: "", //数据空间投影
-          da_quality: "", //数据质量说明
-          da_refer: "", //文献引用方式
-        },
-        // 数据属性值
-        attr_value: [],
-      };
-      this.value1 = "";
-      this.value2 = "";
-      this.value3 = "";
-      this.value4 = "";
-      this.datatime = "";
+     
     },
     // 判断是否必选的已选完
     jadgeIsOver() {
-      if (
-        this.postObj.basic_info.NAME == "" ||
-        this.postObj.basic_info.sploc == "" ||
-        this.postObj.basic_info.up_time == "" ||
-        this.postObj.basic_info.point1_lat == "" ||
-        this.postObj.basic_info.point1_lon == "" ||
-        this.postObj.basic_info.point2_lat == "" ||
-        this.postObj.basic_info.point2_lon == "" ||
-        this.postObj.basic_info.da_summ == "" ||
-        this.postObj.basic_info.da_type == "" ||
-        this.postObj.basic_info.uper_name == "" ||
-        this.postObj.basic_info.uper_place == "" ||
-        this.postObj.basic_info.datm_range == "" ||
-        this.postObj.attr_value.length == 0
-      ) {
-        return false;
-      } else {
-        return true;
-      }
+      
     },
     // 发布数据
     publicData() {
-      alert(
-        this.value1 + this.value2 + this.value3 + this.value4 + this.datatime
-      );
+      // alert(
+      //   this.value1 + this.value2 + this.value3 + this.value4 + this.datatime
+      // );
       //判断是否必选的已选完。
-      // if (!this.jadgeIsOver()) {
-      //   this.$message({
-      //     type: "warning",
-      //     message: "有未完成的必选项",
-      //   });
-      //   return;
-      // }
-      // if (this.tempDataThematic.length === 0) {
-      //   this.$message({
-      //     type: "warning",
-      //     message: "有未完成的必选项",
-      //   });
-      //   return;
-      // }
-      // if (this.fileCount1 + this.fileCount2 < 2) {
-      //   this.$message.warning("请选择完相应的文件");
-      //   return;
-      // }
-      // for (var j = 0; j < this.tempDataThematic.length; j++) {
-      //   this.postObj.attr_value.push(this.tempDataThematic[j]);
-      // }
-      // var tempPosition = this.jadgeIsPosition(this.postObj.basic_info.sploc);
-      // if (tempPosition.check) {
-      //   this.postObj.attr_value.push({
-      //     v_id: tempPosition.id,
-      //     v_name: this.postObj.basic_info.sploc,
-      //     v_id_k: 3,
-      //   });
-      // } else {
-      //   this.postObj.attr_value.push({
-      //     v_id: tempPosition.id,
-      //     v_name: this.postObj.basic_info.sploc,
-      //     v_id_k: 3,
-      //   });
-      // }
-      // this.postObj.basic_info.docname = this.postObj.basic_info.NAME;
-      // this.fileData = new FormData();
-      // this.$refs.uploadimage.submit();
-      // this.$refs.uploadfile.submit();
-      // var tempData = JSON.stringify(this.postObj);
-      // this.fileData.append("data", tempData);
-      // this.$http
-      //   .post("/UpLoadServlet", this.fileData, {
-      //     headers: { "Content-Type": "multipart/form-data" },
-      //   })
-      //   .then((res) => {
-      //     this.$message.success("文件上传成功");
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //     this.$message.error("文件上传失败");
-      //   });
-      // this.resFiled();
-      // this.fileList = [];
-      // this.fileCount1 = 0;
-      // this.fileCount2 = 0;
+      if (this.multipleSelection.length==0){
+        this.$message({
+          type: "warning",
+          message: "请选择上传数据",
+        });
+        return;
+      }
+      //上传数据
+       this.$http
+        .get("/datamanage/publish", {
+          params: {
+            method: "uploadraster",
+            fileList:this.multipleSelection
+          },
+        })
+        .then((res) => {
+          console.log(res.data.list);
+          this.rasterList = res.data.list;
+          this.rasterList.forEach(element => {
+            element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
+          });
+        });
+     
     },
     //获取用户数据
     // getUserData() {
@@ -668,40 +518,40 @@ export default {
 </script>
 
 <style>
-    .el-transfer-panel{
-        width: 500px;
-        height: 600px;
-    }
-    .el-transfer-panel__list.is-filterable{
-        height: 400px;
-    }
-      
-  .transfer-footer {
-      margin-left: 20px;
-      padding: 6px 5px;
-    }
-  .uploadfiles .el-upload-dragger {
-    width: 360px !important;
-    height: 40px !important;
-    line-height: 40px !important;
-  }
-  .uploadfiles .el-upload-list {
-    float: right;
-  }
-  .uploadfiles .el-form-item__label {
-    /* margin: 5px 20px; */
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-  }
-  .uploadfiles .el-form-item {
-    margin-bottom: 10px;
-  }
-  .setBaseInfo span,
-  .setDataTags .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
+.el-transfer-panel {
+  width: 500px;
+  height: 600px;
+}
+.el-transfer-panel__list.is-filterable {
+  height: 400px;
+}
+
+.transfer-footer {
+  margin-left: 20px;
+  padding: 6px 5px;
+}
+.uploadfiles .el-upload-dragger {
+  width: 360px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+.uploadfiles .el-upload-list {
+  float: right;
+}
+.uploadfiles .el-form-item__label {
+  /* margin: 5px 20px; */
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+}
+.uploadfiles .el-form-item {
+  margin-bottom: 10px;
+}
+.setBaseInfo span,
+.setDataTags .grid-content {
+  border-radius: 4px;
+  min-height: 36px;
+}
 </style>
 <style scoped>
 .datamanagement {

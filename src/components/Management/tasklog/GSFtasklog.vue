@@ -2,7 +2,7 @@
 <template>
 
     <div>
-        <iframe src="http://localhost:9191/job-console/" id="mobsf" scrolling="yes" frameborder="0" style="position:absolute;top:63px;left: 249px;right:0px;bottom:100px;"></iframe>
+        <iframe src="http://101.37.83.223:7007/job-console/" id="mobsf" scrolling="yes" frameborder="0" style="position:absolute;top:63px;left: 249px;right:0px;bottom:100px;"></iframe>
     </div>
 </template>
 
