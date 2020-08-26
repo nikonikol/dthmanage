@@ -381,7 +381,7 @@ export default {
           console.log(res.data.list);
           this.rasterList = res.data.list;
           this.rasterList.forEach(element => {
-            element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
+            element.filepath="/rootdata/raster/"+this.SateliteOption[this.value1-1].satelite+"/compress/"+element.filename
           });
         });
       }
@@ -467,27 +467,29 @@ export default {
       //   this.value1 + this.value2 + this.value3 + this.value4 + this.datatime
       // );
       //判断是否必选的已选完。
-      if (this.multipleSelection.length==0){
+      let fileList =this.multipleSelection
+      if (fileList.length==0){
         this.$message({
           type: "warning",
           message: "请选择上传数据",
         });
         return;
       }
+      fileList=JSON.stringify(fileList)
       //上传数据
        this.$http
         .get("/datamanage/publish", {
           params: {
             method: "uploadraster",
-            fileList:this.multipleSelection
+            fileList:fileList
           },
         })
         .then((res) => {
           console.log(res.data.list);
-          this.rasterList = res.data.list;
-          this.rasterList.forEach(element => {
-            element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
-          });
+          // this.rasterList = res.data.list;
+          // this.rasterList.forEach(element => {
+          //   element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
+          // });
         });
      
     },
