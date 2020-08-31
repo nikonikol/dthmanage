@@ -36,12 +36,12 @@
       <!-- 数据列表展示区域 -->
       <el-table :data="BasicDataList" border stripe>
         <el-table-column type="index" label="id"></el-table-column>
-        <el-table-column prop="name" label="资源名称"></el-table-column>
-        <el-table-column prop="sploc" label="空间位置"></el-table-column>
-        <el-table-column prop="da_size" label="数据大小"></el-table-column>
-        <el-table-column prop="up_time" label="上传时间"></el-table-column>
-        <el-table-column prop="uper_name" label="数据贡献者"></el-table-column>
-        <el-table-column prop="uper_place" label="工作单位"></el-table-column>
+        <el-table-column prop="raster_name" label="资源名称"></el-table-column>
+        <el-table-column prop="satelite" label="数据源"></el-table-column>
+        <el-table-column prop="raster_url" label="影像路径"></el-table-column>
+        <el-table-column prop="data_time" label="数据时间"></el-table-column>
+        <!-- <el-table-column prop="uper_name" label="数据贡献者"></el-table-column>
+        <el-table-column prop="uper_place" label="工作单位"></el-table-column> -->
         <el-table-column label="操作">
           <template slot-scope="scope">
             <!-- <el-tooltip
@@ -108,7 +108,7 @@ export default {
       DialogVisible: false,
       taggleContentTips: "请先选择查询条件",
       selectValue: "",
-      newsContent: ""
+      newsContent: "",
     };
   },
   watch: {},
@@ -126,7 +126,7 @@ export default {
       if (this.selectValue == "") {
         this.$message({
           type: "warning",
-          message: "请先选择分类体系"
+          message: "请先选择分类体系",
         });
         return;
       }
@@ -150,10 +150,10 @@ export default {
           params: {
             method: "showDataByKey",
             value: this.key,
-            key: this.selectValue
-          }
+            key: this.selectValue,
+          },
         })
-        .then(res => {
+        .then((res) => {
           for (var i = 0; i < res.data.list.length; i++) {
             res.data.list[i].up_time = this.timestampToTime(
               res.data.list[i].up_time
@@ -162,10 +162,10 @@ export default {
           this.BasicDataList = res.data.list;
           this.totalCount = res.data.totalCount;
         })
-        .catch(res => {
+        .catch((res) => {
           this.$message({
             type: "warning",
-            message: "请先选择分类体系"
+            message: "请先选择分类体系",
           });
         });
     },
@@ -174,21 +174,21 @@ export default {
       this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
           this.$http
             .get("/DMServlet", {
               params: {
                 method: "deleteDataById",
-                id: id
-              }
+                id: id,
+              },
             })
-            .then(res => {
+            .then((res) => {
               if (res.data["删除基础信息表中记录:"]) {
                 this.$message({
                   type: "success",
-                  message: "删除成功!"
+                  message: "删除成功!",
                 });
                 this.getBasicData();
               } else {
@@ -199,26 +199,28 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除",
           });
         });
     },
     // 获取数据
     getBasicData() {
       this.$http
-        .get("/DMServlet", {
+        .get("/datamanage/search", {
           params: {
-            method: "showDataByKey",
+            method: "",
+            startTime: "",
+            endTime: "",
             currentPage: this.currentPage,
-            currentCount: this.currentCount
-          }
+            currentCount: this.currentCount,
+          },
         })
-        .then(res => {
-          for (var i = 0; i < res.data.list.length; i++) {
-            res.data.list[i].up_time = this.timestampToTime(
-              res.data.list[i].up_time
-            );
-          }
+        .then((res) => {
+          // for (var i = 0; i < res.data.list.length; i++) {
+          //   res.data.list[i].data_time  = this.timestampToTime(
+          //     res.data.list[i].data_time
+          //   );
+          // }
           this.BasicDataList = res.data.list;
           this.totalCount = res.data.totalCount;
         });
@@ -228,22 +230,22 @@ export default {
       this.$http
         .get("/newsContent", {
           params: {
-            id: id
-          }
+            id: id,
+          },
         })
-        .then(res => {
+        .then((res) => {
           if (res.data.length > 0) {
             this.newsContent = res.data[0].news_cont;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message.error("请求数据失败");
         });
       this.DialogVisible = true;
     },
     deleteImage(html) {
       let nowimgs = this.getSrc(html);
-      let merge = nowimgs.filter(function(v, i, arr) {
+      let merge = nowimgs.filter(function (v, i, arr) {
         return arr.indexOf(v) === arr.lastIndexOf(v);
       });
       for (let x in merge) {
@@ -253,10 +255,10 @@ export default {
           .get("/NewsServlet", {
             params: {
               method: "deletePictures",
-              picNames: imgName
-            }
+              picNames: imgName,
+            },
           })
-          .then(res => {});
+          .then((res) => {});
       }
     },
     getSrc(html) {
@@ -283,12 +285,12 @@ export default {
           : date.getMonth() + 1) + "-";
       var D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
       return Y + M + D;
-    }
+    },
   },
   mounted() {
     this.getBasicData();
   },
-  created() {}
+  created() {},
 };
 </script>
 <style >

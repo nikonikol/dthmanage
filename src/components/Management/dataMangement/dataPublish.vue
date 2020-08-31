@@ -192,16 +192,20 @@
 <script>
 // import majar from "./subjectData.js";
 export default {
-  data() { 
+  data() {
     return {
-        user_name:window.atob(window.sessionStorage.getItem("token")),
-        // data:[],
-        ProductList:[],
-        value: [1],
-        value4: [1],
-        renderFunc(h, option) {
-          return <span>{ option.key } - { option.label }</span>;
-        },
+      user_name: window.atob(window.sessionStorage.getItem("token")),
+      // data:[],
+      ProductList: [],
+      value: [1],
+      value4: [1],
+      renderFunc(h, option) {
+        return (
+          <span>
+            {option.key} - {option.label}
+          </span>
+        );
+      },
       labelDialogVisible: false,
       postObj: {
         // 基础信息表
@@ -222,7 +226,7 @@ export default {
           // da_projection: "", //数据空间投影
         },
       },
-      rasterList:[],
+      rasterList: [],
       SensorOption: [],
       TimeResolution: [],
       SpatialResolution: [],
@@ -262,18 +266,14 @@ export default {
           satelite: "FY-3",
           sensor: [{ value: "MERSI" }],
           Tresolution: [{ value: "小于一天" }],
-          Sresolution: [
-            { value: "250m/500m/1000m" }
-          ],
+          Sresolution: [{ value: "250m/500m/1000m" }],
         },
         {
           value: "2",
           satelite: "MODIS",
           sensor: [{ value: "Terra/Aqua" }],
           Tresolution: [{ value: "1天" }],
-          Sresolution: [
-            { value: "250m/500m/1000m" }
-          ],
+          Sresolution: [{ value: "250m/500m/1000m" }],
         },
         {
           value: "3",
@@ -323,72 +323,79 @@ export default {
       value2: "", //传感器
       value3: "", //时间分辨率
       value4: "", //空间分辨率
-      multipleSelection:[],
+      multipleSelection: [],
     };
   },
   watch: {
-    value1(val) {
-    },
+    value1(val) {},
   },
   created() {
     // this.subjectOptions = majar;
   },
   mounted() {
-    
     //this.getUserData();
     //this.getPosition();
     //this.postObj.basic_info.up_id = atob(sessionStorage.getItem("token"));
     //this.getTime(1, 0);
   },
   methods: {
-        toggleSelection(rows) {
-          if (rows) {
-            rows.forEach(row => {
-              this.$refs.multipleTable.toggleRowSelection(row);
-            });
-          } else {
-            this.$refs.multipleTable.clearSelection();
-          }
-        },
+    //
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach((row) => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+    //监测选项的变化
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      console.log(this.multipleSelection);
+    },
 
-        handleSelectionChange(val) {
-          this.multipleSelection = val;
-          console.log(this.multipleSelection);
-        },
-        
-      //   generateData(){
-      //   const data = [];
-       
-      //   for (let i = 0; i < this.rasterList.length; i++) {
-      //     console.log(this.rasterList[i].filename);
-      //     data.push({
-      //       key: i,
-      //       label: `备选项 ${ this.rasterList[i].filename }`,
-      //       // disabled: i % 4 === 0
-      //     });
-      //   }
-      //   return data;
-      // },
+    //   generateData(){
+    //   const data = [];
+
+    //   for (let i = 0; i < this.rasterList.length; i++) {
+    //     console.log(this.rasterList[i].filename);
+    //     data.push({
+    //       key: i,
+    //       label: `备选项 ${ this.rasterList[i].filename }`,
+    //       // disabled: i % 4 === 0
+    //     });
+    //   }
+    //   return data;
+    // },
+    //查询数据
     handleChange(value) {
-      if(this.value1!=""&&this.value2!=""&&this.value3!=""&&this.value4!=""){
-
-        let satelitestr= this.SateliteOption[this.value1 - 1].satelite;
-        let _this=this
+      if (
+        this.value1 != "" &&
+        this.value2 != "" &&
+        this.value3 != "" &&
+        this.value4 != ""
+      ) {
+        let satelitestr = this.SateliteOption[this.value1 - 1].satelite;
+        let _this = this;
         this.$http
-        .get("/datamanage/publish", {
-          params: {
-            method: "getrasterlist",
-            satelite:satelitestr
-          },
-        })
-        .then((res) => {
-          console.log(res.data.list);
-          this.rasterList = res.data.list;
-          this.rasterList.forEach(element => {
-            element.filepath="/rootdata/raster/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
-          });
-          
-        })
+          .get("/datamanage/publish", {
+            params: {
+              method: "getrasterlist",
+              satelite: satelitestr,
+            },
+          })
+          .then((res) => {
+            console.log(res.data.list);
+            this.rasterList = res.data.list;
+            this.rasterList.forEach((element) => {
+              element.filepath =
+                "/rootdata/raster/" +
+                this.SateliteOption[this.value1 - 1].satelite +
+                "/" +
+                element.filename;
+            });
+          })
           .catch((response) => {
             _this.$alert(response, "请求错误", {
               confirmButtonText: "确定",
@@ -450,7 +457,6 @@ export default {
       this.postObj.basic_info.up_time = time;
     },
 
- 
     // 格式化时间范围
     selectYear(val) {
       if (!val) {
@@ -469,60 +475,56 @@ export default {
       this.value2 = "";
       this.value3 = "";
       this.value4 = "";
-      rasterList=[];
-      
+      rasterList = [];
     },
     // 判断是否必选的已选完
-    jadgeIsOver() {
-      
-    },
+    jadgeIsOver() {},
     // 发布数据
     publicData() {
       //判断是否必选的已选完。
-      let fileList =this.multipleSelection
-      let user_id=window.atob(window.sessionStorage.getItem("user_id"));
-      if (fileList.length==0){
+      let fileList = this.multipleSelection;
+      let user_id = window.atob(window.sessionStorage.getItem("user_id"));
+      if (fileList.length == 0) {
         this.$message({
           type: "warning",
           message: "请选择上传数据",
         });
         return;
       }
-      fileList=JSON.stringify(fileList)
-      let satelitestr= this.SateliteOption[this.value1 - 1].satelite;
-       let _this=this
+      fileList = JSON.stringify(fileList);
+      let satelitestr = this.SateliteOption[this.value1 - 1].satelite;
+      let _this = this;
       //上传数据
-       this.$http
+      this.$http
         .get("/datamanage/publish", {
           params: {
             method: "uploadraster",
             user_id,
-            fileList:fileList,
+            fileList: fileList,
             satelitestr,
-            sensor:this.value2,
-             reso_time:this.value3,
-             reso_space:this.value4
+            sensor: this.value2,
+            reso_time: this.value3,
+            reso_space: this.value4,
           },
         })
         .then((res) => {
-           console.log(res.data);
-           if(res.data.code==1){
-                this.$message({
-                type: "success",
-                message: "数据入库成功",
-        });
-           }
-        //   this.rasterList = res.data.list;
-        //   this.rasterList.forEach(element => {
-        //     element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
-        //   });
+          console.log(res.data);
+          if (res.data.code == 1) {
+            this.$message({
+              type: "success",
+              message: "数据入库成功",
+            });
+          }
+          //   this.rasterList = res.data.list;
+          //   this.rasterList.forEach(element => {
+          //     element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
+          //   });
         })
         .catch((response) => {
-            _this.$alert(response, "请求错误", {
-              confirmButtonText: "确定",
-            });
+          _this.$alert(response, "请求错误", {
+            confirmButtonText: "确定",
           });
-     
+        });
     },
     //获取用户数据
     // getUserData() {
@@ -543,11 +545,8 @@ export default {
     addOtherLabel() {
       this.labelDialogVisible = true;
     },
-
   },
 };
-
-
 </script>
 
 <style>
