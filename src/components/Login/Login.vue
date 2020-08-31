@@ -63,6 +63,7 @@ export default {
                   message: "登录成功"
                 });
                 window.sessionStorage.setItem("token", window.btoa(res.data.message[0].user_name));
+                window.sessionStorage.setItem("user_id", window.btoa(res.data.message[0].user_id));
                 this.$router.push({ path: "/administrator" });
               } else {
                 this.$message({

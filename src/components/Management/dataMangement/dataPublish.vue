@@ -263,9 +263,7 @@ export default {
           sensor: [{ value: "MERSI" }],
           Tresolution: [{ value: "小于一天" }],
           Sresolution: [
-            { value: "250m" },
-            { value: "500m" },
-            { value: "1000m" },
+            { value: "250m/500m/1000m" }
           ],
         },
         {
@@ -274,9 +272,7 @@ export default {
           sensor: [{ value: "Terra/Aqua" }],
           Tresolution: [{ value: "1天" }],
           Sresolution: [
-            { value: "250m" },
-            { value: "500m" },
-            { value: "1000m" },
+            { value: "250m/500m/1000m" }
           ],
         },
         {
@@ -284,7 +280,7 @@ export default {
           satelite: "Landsat7",
           sensor: [{ value: "ETM+" }],
           Tresolution: [{ value: "16天" }],
-          Sresolution: [{ value: "15m" }, { value: "30m" }],
+          Sresolution: [{ value: "15m/30m" }],
           //Bands:[{ value: "band1" },{ value: "band2" },{ value: "band3" },{ value: "band4" },{ value: "band5" },{ value: "band6" },{ value: "band7" },{ value: "band8" },{ value: "band9" },{ value: "band10" },{ value: "band11" }]
         },
         {
@@ -292,7 +288,7 @@ export default {
           satelite: "Landsat8",
           sensor: [{ value: "OLI/TIRS" }],
           Tresolution: [{ value: "16天" }],
-          Sresolution: [{ value: "15m" }, { value: "30m" }],
+          Sresolution: [{ value: "15m/30m" }],
         },
         {
           value: "5",
@@ -306,7 +302,7 @@ export default {
           satelite: "Sentinel2",
           sensor: [{ value: "MSI" }],
           Tresolution: [{ value: "5天" }],
-          Sresolution: [{ value: "10m" }, { value: "20m" }, { value: "60m" }],
+          Sresolution: [{ value: "10m/20m/60m" }],
         },
         {
           value: "7",
@@ -314,6 +310,13 @@ export default {
           sensor: [{ value: "无" }],
           Tresolution: [{ value: "10分钟" }],
           Sresolution: [{ value: "500m" }],
+        },
+        {
+          value: "8",
+          satelite: "Landsat5",
+          sensor: [{ value: "TM/MSS" }],
+          Tresolution: [{ value: "16天" }],
+          Sresolution: [{ value: "30m/120m" }],
         },
       ],
       value1: "", //卫星
@@ -370,6 +373,7 @@ export default {
       if(this.value1!=""&&this.value2!=""&&this.value3!=""&&this.value4!=""){
 
         let satelitestr= this.SateliteOption[this.value1 - 1].satelite;
+        let _this=this
         this.$http
         .get("/datamanage/publish", {
           params: {
@@ -381,9 +385,15 @@ export default {
           console.log(res.data.list);
           this.rasterList = res.data.list;
           this.rasterList.forEach(element => {
-            element.filepath="/rootdata/raster/"+this.SateliteOption[this.value1-1].satelite+"/compress/"+element.filename
+            element.filepath="/rootdata/raster/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
           });
-        });
+          
+        })
+          .catch((response) => {
+            _this.$alert(response, "请求错误", {
+              confirmButtonText: "确定",
+            });
+          });
       }
     },
     // handleTranferChange(value, direction, movedKeys) {
@@ -455,7 +465,12 @@ export default {
     },
     // 重置数据
     resFiled() {
-     
+      this.value1 = "";
+      this.value2 = "";
+      this.value3 = "";
+      this.value4 = "";
+      rasterList=[];
+      
     },
     // 判断是否必选的已选完
     jadgeIsOver() {
@@ -463,11 +478,9 @@ export default {
     },
     // 发布数据
     publicData() {
-      // alert(
-      //   this.value1 + this.value2 + this.value3 + this.value4 + this.datatime
-      // );
       //判断是否必选的已选完。
       let fileList =this.multipleSelection
+      let user_id=window.atob(window.sessionStorage.getItem("user_id"));
       if (fileList.length==0){
         this.$message({
           type: "warning",
@@ -475,24 +488,40 @@ export default {
         });
         return;
       }
-      let fileList=JSON.stringify(this.multipleSelection)
+      fileList=JSON.stringify(fileList)
       let satelitestr= this.SateliteOption[this.value1 - 1].satelite;
+       let _this=this
       //上传数据
        this.$http
         .get("/datamanage/publish", {
           params: {
             method: "uploadraster",
+            user_id,
             fileList:fileList,
-            satelitestr
+            satelitestr,
+            sensor:this.value2,
+             reso_time:this.value3,
+             reso_space:this.value4
           },
         })
         .then((res) => {
            console.log(res.data);
+           if(res.data.code==1){
+                this.$message({
+                type: "success",
+                message: "数据入库成功",
+        });
+           }
         //   this.rasterList = res.data.list;
         //   this.rasterList.forEach(element => {
         //     element.filepath="/rootdata/"+this.SateliteOption[this.value1-1].satelite+"/"+element.filename
         //   });
-        });
+        })
+        .catch((response) => {
+            _this.$alert(response, "请求错误", {
+              confirmButtonText: "确定",
+            });
+          });
      
     },
     //获取用户数据
