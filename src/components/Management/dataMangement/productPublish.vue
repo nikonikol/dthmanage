@@ -211,6 +211,10 @@ export default {
        * 得到二级目录的值
        */
     productNameHandle(value) {
+      //清空其他选项
+      this.Classvalue=""
+      this.Timevalue=""
+      this.rasterList=[]
       this.$http
         .post("/product/publish", {
           method: "getProductClassList",
@@ -271,32 +275,26 @@ export default {
     // 发布数据
     publicData() {
       //判断是否必选的已选完。
-      let fileList = this.multipleSelection;
+      let productsList = this.multipleSelection;
       let user_id = window.atob(window.sessionStorage.getItem("user_id"));
-      if (fileList.length == 0) {
+      if (productsList.length == 0) {
         this.$message({
           type: "warning",
           message: "请选择上传数据",
         });
         return;
       }
-      fileList = JSON.stringify(fileList);
-      let satelitestr = this.SateliteOption[this.value1 - 1].satelite;
-      let _this = this;
+      productsList = JSON.stringify(productsList);
+      // let _this = this;
       //上传数据
       this.$http
-        .get("/datamanage/publish", {
-          params: {
-            method: "uploadraster",
+        .post("/product/publish", {
+            method: "uploadproduct",
             user_id,
-            fileList: fileList,
-            satelitestr,
-            sensor: this.value2,
-            reso_time: this.value3,
-            reso_space: this.value4,
-          },
+            productsList: productsList
         })
         .then((res) => {
+
           console.log(res.data);
           if (res.data.code == 1) {
             this.$message({
@@ -310,7 +308,7 @@ export default {
           //   });
         })
         .catch((response) => {
-          _this.$alert(response, "请求错误", {
+          this.$alert(response, "请求错误", {
             confirmButtonText: "确定",
           });
         });
@@ -326,7 +324,7 @@ export default {
           this.ProductList = res.data.list;
         })
         .catch((response) => {
-          _this.$alert(response, "请求错误", {
+          this.$alert(response, "请求错误", {
             confirmButtonText: "确定",
           });
         });
