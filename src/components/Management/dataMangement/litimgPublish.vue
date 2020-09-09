@@ -66,7 +66,8 @@
       </div> -->
 <!-- <el-progress type="circle" :percentage="100" status="success"></el-progress> -->
 <div class="row" style="margin:20px" v-if="showprogress">
-<el-progress :text-inside="true" :stroke-width="34" :percentage="progress" :status="taskStatue"></el-progress>
+<el-progress :text-inside="true" :stroke-width="34" :percentage="progress"></el-progress>
+<!-- <el-progress :text-inside="true" :stroke-width="34" :percentage="progress" :status="taskStatue"></el-progress> -->
 </div>
 
       <!-- 上传数据文档、缩略图等文件 -->
@@ -198,7 +199,7 @@ export default {
         })
         .then((res) => {
           this.loading = false;
-          showprogress=true;
+          this.showprogress=true;
           console.log(res.data);
           let { jobId, progress } = res.data;
           console.log("收到回调");
@@ -232,10 +233,11 @@ export default {
             let json = response.data;
             if (json.jobStatus === "esriJobSubmitted" ||json.jobProgress == 0 ||json.jobStatus === "esriJobExecuting") {
               _this.progress = json.jobProgress;
+              console.log("---------------", _this.progress);
               setTimeout(getStatus(statusURL), 1000);
             } else if (json.jobStatus === "esriJobSucceeded") {
-              _this.taskStatue = "success";
-              console.log(json.results[0].value.elements);
+              //_this.taskStatue = "success";
+              console.log(json.results);
 
               // 拿到task的输出参数 数据入库
 
