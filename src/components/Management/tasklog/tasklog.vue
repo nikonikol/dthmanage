@@ -27,8 +27,8 @@
         <el-table-column prop="user_name" label="提交者昵称"></el-table-column>
         <el-table-column prop="data_time" label="完成时间"></el-table-column>
         <el-table-column prop="data_type" label="数据类型"></el-table-column>
-        <el-table-column prop="is_open" label="是否公开"></el-table-column>
-        <el-table-column prop="is_success" label="是否成功"></el-table-column>
+        <el-table-column prop="is_open" label="是否公开" :formatter="formatBoolean"></el-table-column>
+        <el-table-column prop="is_success" label="是否成功" :formatter="formatBoolean"></el-table-column>
         <el-table-column prop="task_log" label="任务日志"></el-table-column>
         <!-- <el-table-column label="操作">
           <template slot-scope="scope">
@@ -230,7 +230,18 @@ export default {
         var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
         var D = date.getDate()<10 ? '0'+date.getDate() : date.getDate();
         return Y+M+D;
-    }
+    },
+        //格式转换
+    formatBoolean: function (row, column, cellValue) {
+                var ret = ''  //你想在页面展示的值
+                if (cellValue) {
+                    ret = "是"  //根据自己的需求设定
+                } else {
+                    ret = "否"
+                }
+                return ret;
+
+    },
   },
   mounted() {
     this.getNewsData();

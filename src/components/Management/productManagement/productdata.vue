@@ -39,7 +39,7 @@
       <el-table :data="BasicDataList" border stripe>
         <el-table-column type="index" label="id"></el-table-column>
         <el-table-column prop="data_name" label="资源名称"></el-table-column>
-        <el-table-column prop="product_type" label="产品类型"></el-table-column>
+        <el-table-column prop="product_type" label="产品类型" :formatter="formatProduct"></el-table-column>
         <el-table-column prop="data_type" label="数据格式"></el-table-column>
         <el-table-column prop="data_time" :formatter="formatTime"  label="上传时间"></el-table-column>
         <el-table-column prop="user_name" label="数据贡献者"></el-table-column>
@@ -135,6 +135,19 @@ export default {
                 } else {
                     ret = "否"
                 }
+                return ret;
+
+    },
+    //格式转换
+    formatProduct: function (row, column, cellValue) {
+                var ret = ''  //你想在页面展示的值
+                switch(cellValue){
+                  case 0:{
+                    ret="水域面积提取"
+                  }
+                  break;
+                }
+
                 return ret;
 
     },
