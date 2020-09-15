@@ -10,6 +10,8 @@ import GSFtasklog from '../components/Management/tasklog/GSFtasklog.vue'
 import tasklog from '../components/Management/tasklog/tasklog.vue'
 import checkedOrder from '../components/Management/productManagement/checkedOrder.vue'
 import dataList from '../components/Management/dataMangement/dataList.vue'
+import litimgPublish from '../components/Management/dataMangement/litimgPublish.vue'
+import productPublish from '../components/Management/dataMangement/productPublish.vue'
 
 Vue.use(Router)
 
@@ -29,6 +31,16 @@ const router = new Router({
         {
           path: "/dataPublish",
           component: DataPublish,
+          meta: { requireAuth: true }
+        },
+        {
+          path: "/litimgPublish",
+          component: litimgPublish,
+          meta: { requireAuth: true }
+        },
+        {
+          path: "/productPublish",
+          component: productPublish,
           meta: { requireAuth: true }
         },
         {

@@ -73,8 +73,10 @@ export default {
           id: "dataManagement",
           name: "基础数据管理",
           data: [
-            { id: "dataPublish", name: "遥感影像基础数据入库" },
-            { id: "datasPublish", name: "基础环境数据入库" },
+            { id: "dataPublish", name: "遥感影像数据入库" },
+            { id: "litimgPublish", name: "遥感影像数据快视图生成" },
+            { id: "productPublish", name: "标准数据产品入库" },
+            { id: "envirPublish", name: "基础环境数据发布" },
             { id: "dataList", name: "数据列表" }
           ]
         },
