@@ -17,19 +17,24 @@
         </h2>
       </div>
       <el-row :gutter="10" type="flex">
-       <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="1">
-            <span class="requiredItem">数据类别</span>
-          </el-col>
-          <el-col :xs="4" :sm="4" :md="4" :lg="6" :xl="6">
-            <el-select placeholder="请选择数据类别" v-model="Classvalue" @change="handleClassChange" clearable>
-              <el-option
-                v-for="item in classList"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-              ></el-option>
-            </el-select>
-          </el-col>
+        <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="1">
+          <span class="requiredItem">数据类别</span>
+        </el-col>
+        <el-col :xs="4" :sm="4" :md="4" :lg="6" :xl="6">
+          <el-select
+            placeholder="请选择数据类别"
+            v-model="Classvalue"
+            @change="handleClassChange"
+            clearable
+          >
+            <el-option
+              v-for="item in classList"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
+          </el-select>
+        </el-col>
       </el-row>
       <el-table
         v-loading="loading"
@@ -50,25 +55,29 @@
         <el-table-column prop="raster_name" label="数据名称"></el-table-column>
         <el-table-column prop="data_time" label="时间"></el-table-column>
       </el-table>
-            <!-- 分页效果 -->
+      <!-- 分页效果 -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[1,5,10]"
+        :page-sizes="[1, 5, 10]"
         :page-size="currentCount"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount"
       ></el-pagination>
-<!-- 
+      <!-- 
       <div style="margin: 20px">
         <el-button @click="toggleSelection()">取消选择</el-button>
-      </div> -->
-<!-- <el-progress type="circle" :percentage="100" status="success"></el-progress> -->
-<div class="row" style="margin:20px" v-if="showprogress">
-<el-progress :text-inside="true" :stroke-width="34" :percentage="progress"></el-progress>
-<!-- <el-progress :text-inside="true" :stroke-width="34" :percentage="progress" :status="taskStatue"></el-progress> -->
-</div>
+      </div>-->
+      <!-- <el-progress type="circle" :percentage="100" status="success"></el-progress> -->
+      <div class="row" style="margin: 20px" v-if="showprogress">
+        <el-progress
+          :text-inside="true"
+          :stroke-width="34"
+          :percentage="progress"
+        ></el-progress>
+        <!-- <el-progress :text-inside="true" :stroke-width="34" :percentage="progress" :status="taskStatue"></el-progress> -->
+      </div>
 
       <!-- 上传数据文档、缩略图等文件 -->
       <div class="upload_box">
@@ -88,39 +97,34 @@ export default {
     return {
       user_name: window.atob(window.sessionStorage.getItem("token")),
       rasterList: [],
-      multipleSelection: [],
+      multipleSelection: [], //存选择的原始图像
       currentPage: 1,
       currentCount: 5,
       totalCount: 0, // 总数据条数
-      classList:[{name:"标准产品的快视图生成"},{name:"原始影像的快视图生成"}],
-      Classvalue:"",
-      loading:false,
-      progress:0,
-      taskStatue:"",
-      showprogress:false
+      classList: [
+        { name: "标准产品的快视图生成" },
+        { name: "原始影像的快视图生成" },
+      ],
+      Classvalue: "",
+      loading: false,
+      progress: 0,
+      taskStatue: "",
+      showprogress: false,
     };
   },
-  watch: {
-   
-  },
-  created() {
-
-  },
-  mounted() {
-
-  },
+  watch: {},
+  created() {},
+  mounted() {},
   methods: {
     //处理分类的变化
-    handleClassChange(value){
-      this.rasterList=[]
-      this.totalCount=0
-      if(value=="标准产品的快视图生成"){
-        this.getproductList()
+    handleClassChange(value) {
+      this.rasterList = [];
+      this.totalCount = 0;
+      if (value == "标准产品的快视图生成") {
+        this.getproductList();
+      } else if (value == "原始影像的快视图生成") {
+        this.getrasterList();
       }
-      else if(value=="原始影像的快视图生成"){
-        this.getrasterList()
-      }
-
     },
     //取消选择
     toggleSelection(rows) {
@@ -135,6 +139,7 @@ export default {
     //监测选项的变化
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log("选择的原始影像数据为:");
       console.log(this.multipleSelection);
     },
     // 获取当前时间
@@ -195,17 +200,17 @@ export default {
       //上传数据
       this.$http
         .post("/getquickimg", {
-            rasterList: fileList
+          rasterList: fileList,
         })
         .then((res) => {
           this.loading = false;
-          this.showprogress=true;
+          this.showprogress = true;
           console.log(res.data);
           let { jobId, progress } = res.data;
           console.log("收到回调");
           console.log(jobId, progress);
-          this.taskStatue=""
-          var statusURL =window.imgBaseUrl+ "/ese/jobs/" + jobId + "/status";
+          this.taskStatue = "";
+          var statusURL = window.imgBaseUrl + "/ese/jobs/" + jobId + "/status";
           this.poll(statusURL);
           // if (res.data.code == 1) {
           //   this.$message({
@@ -224,87 +229,136 @@ export default {
           });
         });
     },
-       poll(statusURL) {
+    poll(statusURL) {
       let _this = this;
       function getStatus(statusURL) {
         _this.$http
           .get(statusURL)
           .then((response) => {
             let json = response.data;
-            if (json.jobStatus === "esriJobSubmitted" ||json.jobProgress == 0 ||json.jobStatus === "esriJobExecuting") {
+            if (
+              json.jobStatus === "esriJobSubmitted" ||
+              json.jobProgress == 0 ||
+              json.jobStatus === "esriJobExecuting"
+            ) {
               _this.progress = json.jobProgress;
               console.log("---------------", _this.progress);
               setTimeout(getStatus(statusURL), 1000);
             } else if (json.jobStatus === "esriJobSucceeded") {
               //_this.taskStatue = "success";
               console.log(json.results);
+              console.log("取出数据的长度：");
+              console.log(_this.multipleSelection.length);
+
+              // console.log(json.results[0]);
 
               // 拿到task的输出参数 数据入库
+              let litimgurl_arr = [];
+              for (let i = 0; i < _this.multipleSelection.length; i++) {
+                let str =
+                  "json.results[0].value.elements.out_opt" +
+                  i +
+                  ".dehydratedForm";
+                console.log(eval(str).elements.LocalPngFileURL.dehydratedForm);
+                console.log(eval(str).elements.MapExtent.dehydratedForm[0][0]);
+                let url = eval(str).elements.LocalPngFileURL.dehydratedForm;
+                let maxplat = eval(str).elements.MapExtent.dehydratedForm[0][0];
+                let maxplon = eval(str).elements.MapExtent.dehydratedForm[0][1];
+                let minplat = eval(str).elements.MapExtent.dehydratedForm[1][0];
+                let minplon = eval(str).elements.MapExtent.dehydratedForm[1][1];
+                //如果选择标准产品就会报错
+                // let { raster_id } = _this.multipleSelection;
+                // console.log("获取raster_id：");
+                let rasterid = _this.multipleSelection[i].raster_id;
+                // let { raster_id } = _this.multipleSelection;
 
-              // let MapExtent=data.results[0].value.elements.MapExtent.dehydratedForm
-              // MapExtent=JSON.stringify(MapExtent)
-              // let user_id = window.atob(sessionStorage.getItem("token"));
-              // let mothod,
-              //   litimg_url,
-              //   extent,
-              //   productType,
-              //   JobId,
-              //   is_success,
-              //   task_log,
-              //   result_url,
-              //   result_name,
-              //   data_type,
-              //   t_user_id,
-              //   finish_time;
-              // litimg_url =
-              //   json.results[0].value.elements.PngFileURL.dehydratedForm;
-              // //alert(litimg_url);
-              // // http://win-em18550kohg:9191/ese/jobs/369/hndtst_fromL8extractwaterarea8341593_results.png
-              // litimg_url =
-              //   window.imgBaseUrl +
-              //   litimg_url.slice(litimg_url.indexOf("/ese/jobs/"));
-              // // alert(litimg_url);
-              // extent = json.results[0].value.elements.MapExtent.dehydratedForm;
-              // productType = 0;
-              // JobId = json.jobId;
-              // is_success = 1;
-              // task_log = "水域面积提取执行成功";
-              // result_url = litimg_url;
-              // result_name = "水域面积结果图";
-              // data_type = "栅格数据";
-              // t_user_id = user_id;
-              // mothod = "success";
-              // /**数据保存到页面 */
-              // let obj = {
-              //   name: "水域面积提取结果图",
-              //   PngFileURL: litimg_url,
-              //   MapExtent: extent,
-              //   // ZipFileURL: json.results[0].value.elements.ZipFileURL,
-              // };
-              // _this.processResult.push(obj);
+                let obj = {
+                  url,
+                  maxplat,
+                  maxplon,
+                  minplat,
+                  minplon,
+                  rasterid,
+                };
+                litimgurl_arr.push(obj);
+              }
+              litimgurl_arr = JSON.stringify(litimgurl_arr);
+              _this.$http
+                .post("/keepOriginal_image_logs", {
+                  litimgurl_arr,
+                })
+                .then((res) => {
+                  _this.$message({
+                    type: "success",
+                    message: "数据已入库",
+                  });
+                });
+              /*
+              let MapExtent =
+                data.results[0].value.elements.MapExtent.dehydratedForm;
+              MapExtent = JSON.stringify(MapExtent);
+              let user_id = window.atob(sessionStorage.getItem("token"));
+              let mothod,
+                litimg_url,
+                extent,
+                productType,
+                JobId,
+                is_success,
+                task_log,
+                result_url,
+                result_name,
+                data_type,
+                t_user_id,
+                finish_time;
+              litimg_url =
+                json.results[0].value.elements.PngFileURL.dehydratedForm;
+              //alert(litimg_url);
+              // http://win-em18550kohg:9191/ese/jobs/369/hndtst_fromL8extractwaterarea8341593_results.png
+              litimg_url =
+                window.imgBaseUrl +
+                litimg_url.slice(litimg_url.indexOf("/ese/jobs/"));
+              // alert(litimg_url);
+              extent = json.results[0].value.elements.MapExtent.dehydratedForm;
+              productType = 0;
+              JobId = json.jobId;
+              is_success = 1;
+              task_log = "水域面积提取执行成功";
+              result_url = litimg_url;
+              result_name = "水域面积结果图";
+              data_type = "栅格数据";
+              t_user_id = user_id;
+              mothod = "success";
+              /**数据保存到页面 */
+              /*         let obj = {
+                name: "水域面积提取结果图",
+                PngFileURL: litimg_url,
+                MapExtent: extent,
+                //   // ZipFileURL: json.results[0].value.elements.ZipFileURL,
+              };
+              _this.processResult.push(obj);
 
               // //http://localhost:8086/keep_logs
-              // _this.$http
-              //   .post("/keep_logs", {
-              //     mothod,
-              //     litimg_url,
-              //     extent,
-              //     productType,
-              //     JobId,
-              //     is_success,
-              //     task_log,
-              //     result_url,
-              //     result_name,
-              //     data_type,
-              //     t_user_id,
-              //   })
-              //   .then((res) => {
-              //     _this.$message({
-              //       type: "success",
-              //       message: "数据已入库",
-              //     });
-              //   });
-
+              _this.$http
+                .post("/keep_logs", {
+                  mothod,
+                  litimg_url,
+                  extent,
+                  productType,
+                  JobId,
+                  is_success,
+                  task_log,
+                  result_url,
+                  result_name,
+                  data_type,
+                  t_user_id,
+                })
+                .then((res) => {
+                  _this.$message({
+                    type: "success",
+                    message: "数据已入库",
+                  });
+                });
+*/
               console.log("执行成功..............................");
             } else {
               console.log("执行失败........................");
@@ -355,13 +409,12 @@ export default {
     },
     //获取未生成快视图的数据
     getrasterList() {
-
       this.$http
         .get("/rasterdata/getrastertopng", {
           params: {
-            method:"getraster",
+            method: "getraster",
             currentPage: this.currentPage,
-            currentCount: this.currentCount
+            currentCount: this.currentCount,
           },
         })
         .then((res) => {
@@ -373,50 +426,50 @@ export default {
       this.$http
         .get("/rasterdata/getrastertopng", {
           params: {
-            method:"getproduct",
+            method: "getproduct",
             currentPage: this.currentPage,
-            currentCount: this.currentCount
+            currentCount: this.currentCount,
           },
         })
         .then((res) => {
-          console.log(res.data.list,"-----------------------------------------------");
+          console.log(
+            res.data.list,
+            "-----------------------------------------------"
+          );
           //重新组织一下数据
-          let rasterList=[]
-          res.data.list.forEach(element => {
-            let obj={
-              raster_name:element.data_name,
-              data_time:element.data_time,
-              raster_url:element.result_url
-            }
-            rasterList.push(obj)
+          let rasterList = [];
+          res.data.list.forEach((element) => {
+            let obj = {
+              raster_name: element.data_name,
+              data_time: element.data_time,
+              raster_url: element.result_url,
+            };
+            rasterList.push(obj);
           });
           this.rasterList = rasterList;
           this.totalCount = res.data.totalCount;
         });
     },
-        //   监听pagesize的改变
+    //   监听pagesize的改变
     handleSizeChange(val) {
       // console.log(`每页 ${val} 条`);
       this.currentCount = val;
-      if(this.Classvalue=="标准产品的快视图生成"){
-        this.getproductList()
-      }
-      else if(this.Classvalue=="原始影像的快视图生成"){
-        this.getrasterList()
+      if (this.Classvalue == "标准产品的快视图生成") {
+        this.getproductList();
+      } else if (this.Classvalue == "原始影像的快视图生成") {
+        this.getrasterList();
       }
     },
     //监听页码值的改变
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
       this.currentPage = val;
-      if(this.Classvalue=="标准产品的快视图生成"){
-        this.getproductList()
-      }
-      else if(this.Classvalue=="原始影像的快视图生成"){
-        this.getrasterList()
+      if (this.Classvalue == "标准产品的快视图生成") {
+        this.getproductList();
+      } else if (this.Classvalue == "原始影像的快视图生成") {
+        this.getrasterList();
       }
     },
-
   },
 };
 </script>
