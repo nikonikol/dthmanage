@@ -253,14 +253,46 @@ export default {
               // console.log(json.results[0]);
 
               // 拿到task的输出参数 数据入库
+              let litimgurl_arr = [];
               for (let i = 0; i < _this.multipleSelection.length; i++) {
-                console.log("取出第一个");
                 let str =
                   "json.results[0].value.elements.out_opt" +
                   i +
                   ".dehydratedForm";
                 console.log(eval(str).elements.LocalPngFileURL.dehydratedForm);
+                console.log(eval(str).elements.MapExtent.dehydratedForm[0][0]);
+                let url = eval(str).elements.LocalPngFileURL.dehydratedForm;
+                let maxplat = eval(str).elements.MapExtent.dehydratedForm[0][0];
+                let maxplon = eval(str).elements.MapExtent.dehydratedForm[0][1];
+                let minplat = eval(str).elements.MapExtent.dehydratedForm[1][0];
+                let minplon = eval(str).elements.MapExtent.dehydratedForm[1][1];
+                //如果选择标准产品就会报错
+                // let { raster_id } = _this.multipleSelection;
+                // console.log("获取raster_id：");
+                let rasterid = _this.multipleSelection[i].raster_id;
+                // let { raster_id } = _this.multipleSelection;
+
+                let obj = {
+                  url,
+                  maxplat,
+                  maxplon,
+                  minplat,
+                  minplon,
+                  rasterid,
+                };
+                litimgurl_arr.push(obj);
               }
+              litimgurl_arr = JSON.stringify(litimgurl_arr);
+              _this.$http
+                .post("/keepOriginal_image_logs", {
+                  litimgurl_arr,
+                })
+                .then((res) => {
+                  _this.$message({
+                    type: "success",
+                    message: "数据已入库",
+                  });
+                });
               /*
               let MapExtent =
                 data.results[0].value.elements.MapExtent.dehydratedForm;
