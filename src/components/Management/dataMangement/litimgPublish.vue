@@ -75,6 +75,7 @@
           :text-inside="true"
           :stroke-width="34"
           :percentage="progress"
+          :status="status"
         ></el-progress>
         <!-- <el-progress :text-inside="true" :stroke-width="34" :percentage="progress" :status="taskStatue"></el-progress> -->
       </div>
@@ -108,8 +109,8 @@ export default {
       Classvalue: "",
       loading: false,
       progress: 0,
-      taskStatue: "",
       showprogress: false,
+      status:""
     };
   },
   watch: {},
@@ -245,7 +246,7 @@ export default {
               console.log("---------------", _this.progress);
               setTimeout(getStatus(statusURL), 1000);
             } else if (json.jobStatus === "esriJobSucceeded") {
-              //_this.taskStatue = "success";
+              _this.status = "success";
               console.log(json.results);
               console.log("取出数据的长度：");
               console.log(_this.multipleSelection.length);
