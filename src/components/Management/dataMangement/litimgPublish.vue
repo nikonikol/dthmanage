@@ -269,7 +269,7 @@ export default {
                 //如果选择标准产品就会报错
                 // let { raster_id } = _this.multipleSelection;
                 // console.log("获取raster_id：");
-                let rasterid = _this.multipleSelection[i].raster_id;
+                let raster_id = _this.multipleSelection[i].raster_id;
                 // let { raster_id } = _this.multipleSelection;
 
                 let obj = {
@@ -278,14 +278,14 @@ export default {
                   maxplon,
                   minplat,
                   minplon,
-                  rasterid,
+                  raster_id
                 };
                 litimgurl_arr.push(obj);
               }
               litimgurl_arr = JSON.stringify(litimgurl_arr);
               _this.$http
                 .post("/keepOriginal_image_logs", {
-                  litimgurl_arr,
+                  litimgurl_arr
                 })
                 .then((res) => {
                   _this.$message({
