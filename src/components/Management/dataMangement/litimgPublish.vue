@@ -444,6 +444,7 @@ export default {
               raster_name: element.data_name,
               data_time: element.data_time,
               raster_url: element.result_url,
+              raster_id: element.result_id,
             };
             rasterList.push(obj);
           });
