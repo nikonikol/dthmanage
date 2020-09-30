@@ -83,7 +83,7 @@
       <div class="upload_box">
         <el-row justify="end" type="flex" class="public_box">
           <el-button @click="toggleSelection()">重置</el-button>
-          <el-button @click="publicData">生成快视图</el-button>
+          <el-button @click="publicData()">生成快视图</el-button>
         </el-row>
       </div>
     </div>
@@ -183,7 +183,7 @@ export default {
       rasterList = [];
     },
     // 发布数据
-    publicData(Classvalue) {
+    publicData() {
       //判断是否必选的已选完。
       let fileList = this.multipleSelection;
       let user_id = window.atob(window.sessionStorage.getItem("user_id"));
@@ -211,7 +211,7 @@ export default {
           console.log(jobId, progress);
           this.taskStatue = "";
           var statusURL = window.imgBaseUrl + "/ese/jobs/" + jobId + "/status";
-          this.poll(statusURL,Classvalue);
+          this.poll(statusURL);
           // if (res.data.code == 1) {
           //   this.$message({
           //     type: "success",
@@ -229,7 +229,7 @@ export default {
           });
         });
     },
-    poll(statusURL,Classvalue) {
+    poll(statusURL) {
       let _this = this;
       function getStatus(statusURL) {
         _this.$http
@@ -249,10 +249,12 @@ export default {
               console.log(json.results);
               console.log("取出数据的长度：");
               console.log(_this.multipleSelection.length);
+
               // console.log(json.results[0]);
 
               // 拿到task的输出参数 数据入库
               let litimgurl_arr = [];
+              let litimgurl_arr2 = [];
               for (let i = 0; i < _this.multipleSelection.length; i++) {
                 let str =
                   "json.results[0].value.elements.out_opt" +
@@ -269,7 +271,7 @@ export default {
                 // let { raster_id } = _this.multipleSelection;
                 // console.log("获取raster_id：");
                 let raster_id = _this.multipleSelection[i].raster_id;
-                // let result_id=_this.multipleSelection[i].result_id;
+                let result_id = _this.multipleSelection[i].raster_id;
                 // let { raster_id } = _this.multipleSelection;
 
                 let obj = {
@@ -279,103 +281,44 @@ export default {
                   minplat,
                   minplon,
                   raster_id,
-                  // result_id
                 };
                 litimgurl_arr.push(obj);
+                let obj2 = {
+                  url,
+                  maxplat,
+                  maxplon,
+                  minplat,
+                  minplon,
+                  result_id,
+                };
+                litimgurl_arr2.push(obj2);
               }
               litimgurl_arr = JSON.stringify(litimgurl_arr);
-
-
-                if(_this.Classvalue == "原始影像的快视图生成"){
-              _this.$http
-                .post("/keepOriginal_image_logs", {
-                  litimgurl_arr
-                })
-                .then((res) => {
-                  _this.$message({
-                    type: "success",
-                    message: "数据已入库",
+              litimgurl_arr2 = JSON.stringify(litimgurl_arr2);
+              if (_this.Classvalue == "原始影像的快视图生成") {
+                _this.$http
+                  .post("/keepOriginal_image_logs", {
+                    litimgurl_arr,
+                  })
+                  .then((res) => {
+                    _this.$message({
+                      type: "success",
+                      message: "数据已入库",
+                    });
                   });
-                });
-                }else if(_this.Classvalue == "标准产品的快视图生成"){
-                  console.log("标准产品的快视图生成");
-              _this.$http.post("/keepProduct_image_logs", {
-                  litimgurl_arr
-                })
-                .then((res) => {
-                  _this.$message({
-                    type: "success",
-                    message: "数据已入库",
+              } else if (_this.Classvalue == "标准产品的快视图生成") {
+                _this.$http
+                  .post("/keepProduct_image_logs", {
+                    litimgurl_arr2,
+                  })
+                  .then((res) => {
+                    _this.$message({
+                      type: "success",
+                      message: "数据已入库",
+                    });
                   });
-                });
-                }
-              /*
-              let MapExtent =
-                data.results[0].value.elements.MapExtent.dehydratedForm;
-              MapExtent = JSON.stringify(MapExtent);
-              let user_id = window.atob(sessionStorage.getItem("token"));
-              let mothod,
-                litimg_url,
-                extent,
-                productType,
-                JobId,
-                is_success,
-                task_log,
-                result_url,
-                result_name,
-                data_type,
-                t_user_id,
-                finish_time;
-              litimg_url =
-                json.results[0].value.elements.PngFileURL.dehydratedForm;
-              //alert(litimg_url);
-              // http://win-em18550kohg:9191/ese/jobs/369/hndtst_fromL8extractwaterarea8341593_results.png
-              litimg_url =
-                window.imgBaseUrl +
-                litimg_url.slice(litimg_url.indexOf("/ese/jobs/"));
-              // alert(litimg_url);
-              extent = json.results[0].value.elements.MapExtent.dehydratedForm;
-              productType = 0;
-              JobId = json.jobId;
-              is_success = 1;
-              task_log = "水域面积提取执行成功";
-              result_url = litimg_url;
-              result_name = "水域面积结果图";
-              data_type = "栅格数据";
-              t_user_id = user_id;
-              mothod = "success";
-              /**数据保存到页面 */
-              /*         let obj = {
-                name: "水域面积提取结果图",
-                PngFileURL: litimg_url,
-                MapExtent: extent,
-                //   // ZipFileURL: json.results[0].value.elements.ZipFileURL,
-              };
-              _this.processResult.push(obj);
-
-              // //http://localhost:8086/keep_logs
-              _this.$http
-                .post("/keep_logs", {
-                  mothod,
-                  litimg_url,
-                  extent,
-                  productType,
-                  JobId,
-                  is_success,
-                  task_log,
-                  result_url,
-                  result_name,
-                  data_type,
-                  t_user_id,
-                })
-                .then((res) => {
-                  _this.$message({
-                    type: "success",
-                    message: "数据已入库",
-                  });
-                });
-*/
-              console.log("执行成功..............................");
+              }
+              // console.log("执行成功..............................");
             } else {
               console.log("执行失败........................");
               console.log("执行失败", response.data);
@@ -459,7 +402,7 @@ export default {
               raster_name: element.data_name,
               data_time: element.data_time,
               raster_url: element.result_url,
-              raster_id:element.result_id,
+              raster_id: element.result_id,
             };
             rasterList.push(obj);
           });
