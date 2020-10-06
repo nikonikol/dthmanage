@@ -75,6 +75,7 @@
           :text-inside="true"
           :stroke-width="34"
           :percentage="progress"
+          :status="status"
         ></el-progress>
         <!-- <el-progress :text-inside="true" :stroke-width="34" :percentage="progress" :status="taskStatue"></el-progress> -->
       </div>
@@ -110,6 +111,7 @@ export default {
       progress: 0,
       taskStatue: "",
       showprogress: false,
+      status:""
     };
   },
   watch: {},
@@ -306,6 +308,7 @@ export default {
                       message: "数据已入库",
                     });
                   });
+                  _this.status="success"
               } else if (_this.Classvalue == "标准产品的快视图生成") {
                 _this.$http
                   .post("/keepProduct_image_logs", {
@@ -317,6 +320,7 @@ export default {
                       message: "数据已入库",
                     });
                   });
+                  _this.status="success"
               }
               // console.log("执行成功..............................");
             } else {
@@ -326,6 +330,7 @@ export default {
                 type: "warning",
                 message: "抱歉，执行任务出错",
               });
+              _this.status="exception"
               /**
                * 执行失败，记录入库，产品不入库
                */
