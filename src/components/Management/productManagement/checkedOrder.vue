@@ -186,7 +186,7 @@ export default {
         return;
       } else {
         this.$http
-          .post("http://172.27.53.95:8086/updatechecklist", {
+          .post("/updatechecklist", {
             id: id, //影像id
             username: user_name, //管理员名
             resultcheck: this.state[id], //审核结果
@@ -265,7 +265,7 @@ export default {
     getChecklist() {
       // console.log(user_name);
       this.$http
-        .get("http://172.27.53.95:8086/checklistdata", {
+        .get("/checklistdata", {
           params: {},
         })
         .then((res) => {
