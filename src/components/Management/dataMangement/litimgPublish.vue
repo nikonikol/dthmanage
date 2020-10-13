@@ -309,7 +309,7 @@ export default {
                     });
                   });
                   _this.status="success"
-                  this.reloaddata()
+                  _this.reloaddata()
               } else if (_this.Classvalue == "标准产品的快视图生成") {
                 _this.$http
                   .post("/keepProduct_image_logs", {
@@ -322,7 +322,7 @@ export default {
                     });
                   });
                   _this.status="success"
-                  this.reloaddata()
+                  _this.reloaddata()
                 
               }
               
@@ -364,7 +364,7 @@ export default {
                   //     message: "数据已入库",
                   //   });
                 });
-                   this.reloaddata()
+                   _this.reloaddata()
             }
            
           })

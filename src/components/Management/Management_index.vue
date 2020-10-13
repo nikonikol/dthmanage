@@ -76,7 +76,7 @@ export default {
             { id: "dataPublish", name: "遥感影像数据入库" },
             { id: "litimgPublish", name: "遥感影像数据快视图生成" },
             { id: "productPublish", name: "标准数据产品入库" },
-            { id: "envirPublish", name: "基础环境数据发布" },
+            // { id: "envirPublish", name: "基础环境数据发布" },
             { id: "dataList", name: "数据列表" }
           ]
         },
@@ -85,7 +85,7 @@ export default {
           name: "专题数据管理",
           data: [
             { id: "productdata", name: "专题数据预览和管理" },
-            { id: "checkedOrder", name: "专题数据发布审核" }
+            { id: "checkedOrder", name: "标准产品数据发布审核" }
           ]
         },
         {

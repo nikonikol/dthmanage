@@ -26,7 +26,7 @@
             >
             <!--             @change="selectChange" -->
               <el-option label="产品类型" value="product_type"></el-option>
-              <el-option label="数据格式" value="data_type"></el-option>
+              <!-- <el-option label="数据格式" value="data_type"></el-option> -->
               <el-option label="数据功能贡献者" value="user_name"></el-option>
               <!-- <el-option label="上传者姓名" value="uper_name"></el-option> -->
             </el-select>
@@ -39,8 +39,8 @@
       <el-table :data="BasicDataList" border stripe>
         <el-table-column type="index" label="id"></el-table-column>
         <el-table-column prop="data_name" label="资源名称"></el-table-column>
-        <el-table-column prop="product_type" label="产品类型" :formatter="formatProduct"></el-table-column>
-        <el-table-column prop="data_type" label="数据格式"></el-table-column>
+        <!-- <el-table-column prop="product_type" label="产品类型" :formatter="formatProduct"></el-table-column> -->
+        <!-- <el-table-column prop="data_type" label="数据格式"></el-table-column> -->
         <el-table-column prop="data_time" :formatter="formatTime"  label="上传时间"></el-table-column>
         <el-table-column prop="user_name" label="数据贡献者"></el-table-column>
         <el-table-column prop="is_open" :formatter="formatBoolean"  label="是否公开"></el-table-column>
@@ -174,7 +174,9 @@ export default {
           params: {
             method: "getDataByKey",
             value: this.key,
-            key: this.selectValue
+            key: this.selectValue,
+            currentPage: this.currentPage,
+            currentCount: this.currentCount
           }
         })
         .then(res => {
@@ -185,6 +187,7 @@ export default {
           }
           this.BasicDataList = res.data.list;
           this.totalCount = res.data.totalCount;
+          alert(this.totalCount)
            this.$message({
             type: "success",
             message: "查询成功"
