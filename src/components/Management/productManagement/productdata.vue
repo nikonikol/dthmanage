@@ -14,23 +14,25 @@
             v-model="key"
             class="input-with-select"
             @clear="getBasicData()"
-
             clearable
           >
-          <!--  @focus="jadgeIsSelect" -->
+            <!--  @focus="jadgeIsSelect" -->
             <el-select
               v-model="selectValue"
               slot="prepend"
               placeholder="请选择"
-  
             >
-            <!--             @change="selectChange" -->
+              <!--             @change="selectChange" -->
               <el-option label="产品类型" value="product_type"></el-option>
               <el-option label="数据格式" value="data_type"></el-option>
               <el-option label="数据功能贡献者" value="user_name"></el-option>
               <!-- <el-option label="上传者姓名" value="uper_name"></el-option> -->
             </el-select>
-            <el-button slot="append" icon="el-icon-search" @click="searchData()"></el-button>
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="searchData()"
+            ></el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -39,11 +41,23 @@
       <el-table :data="BasicDataList" border stripe>
         <el-table-column type="index" label="id"></el-table-column>
         <el-table-column prop="data_name" label="资源名称"></el-table-column>
-        <el-table-column prop="product_type" label="产品类型" :formatter="formatProduct"></el-table-column>
+        <el-table-column
+          prop="product_type"
+          label="产品类型"
+          :formatter="formatProduct"
+        ></el-table-column>
         <el-table-column prop="data_type" label="数据格式"></el-table-column>
-        <el-table-column prop="data_time" :formatter="formatTime"  label="上传时间"></el-table-column>
+        <el-table-column
+          prop="data_time"
+          :formatter="formatTime"
+          label="上传时间"
+        ></el-table-column>
         <el-table-column prop="user_name" label="数据贡献者"></el-table-column>
-        <el-table-column prop="is_open" :formatter="formatBoolean"  label="是否公开"></el-table-column>
+        <el-table-column
+          prop="is_open"
+          :formatter="formatBoolean"
+          label="是否公开"
+        ></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-tooltip
@@ -72,7 +86,7 @@
                 icon="el-icon-delete"
                 size="mini"
                 :disabled="false"
-                @click="deleteBasicData(scope.row.id)"
+                @click="deleteBasicData(scope.row.result_id)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -84,7 +98,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5,6,7,8,9,10]"
+        :page-sizes="[5, 6, 7, 8, 9, 10]"
         :page-size="currentCount"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount"
@@ -92,11 +106,15 @@
     </el-card>
 
     <!-- 图片预览 -->
-    <el-dialog title="图片预览" :visible.sync="DialogVisible" :close-on-click-modal="false" width="60%">
-     <div class="img">
-         <img :src="imgurl" alt="" style="width:100%; ">
-     </div>
-    
+    <el-dialog
+      title="图片预览"
+      :visible.sync="DialogVisible"
+      :close-on-click-modal="false"
+      width="60%"
+    >
+      <div class="img">
+        <img :src="imgurl" alt="" style="width: 100%" />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -113,7 +131,7 @@ export default {
       DialogVisible: false,
       taggleContentTips: "请先选择查询条件",
       selectValue: "",
-      imgurl: ""
+      imgurl: "",
     };
   },
   watch: {},
@@ -129,43 +147,42 @@ export default {
 
     //格式转换
     formatBoolean: function (row, column, cellValue) {
-                var ret = ''  //你想在页面展示的值
-                if (cellValue) {
-                    ret = "是"  //根据自己的需求设定
-                } else {
-                    ret = "否"
-                }
-                return ret;
-
+      var ret = ""; //你想在页面展示的值
+      if (cellValue) {
+        ret = "是"; //根据自己的需求设定
+      } else {
+        ret = "否";
+      }
+      return ret;
     },
     //格式转换
     formatProduct: function (row, column, cellValue) {
-                var ret = ''  //你想在页面展示的值
-                switch(cellValue){
-                  case 0:{
-                    ret="水域面积提取"
-                  }
-                  break;
-                }
+      var ret = ""; //你想在页面展示的值
+      switch (cellValue) {
+        case 0:
+          {
+            ret = "水域面积提取";
+          }
+          break;
+      }
 
-                return ret;
-
+      return ret;
     },
     //时间的格式转换
     formatTime: function (row, column, cellValue) {
-                 var ret = ''  //你想在页面展示的值
-                // if (cellValue) {
-                //     ret = "是"  //根据自己的需求设定
-                // } else {
-                //     ret = "否"
-                // }
-                  var json_date = new Date(cellValue).toJSON();
-                  ret=new Date(new Date(json_date) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '') ;
-                return ret;
-
+      var ret = ""; //你想在页面展示的值
+      // if (cellValue) {
+      //     ret = "是"  //根据自己的需求设定
+      // } else {
+      //     ret = "否"
+      // }
+      var json_date = new Date(cellValue).toJSON();
+      ret = new Date(new Date(json_date) + 8 * 3600 * 1000)
+        .toISOString()
+        .replace(/T/g, " ")
+        .replace(/\.[\d]{3}Z/, "");
+      return ret;
     },
-
-
 
     // 查询数据
     searchData() {
@@ -174,63 +191,73 @@ export default {
           params: {
             method: "getDataByKey",
             value: this.key,
-            key: this.selectValue
-          }
+            key: this.selectValue,
+          },
         })
-        .then(res => {
+        .then((res) => {
           for (var i = 0; i < res.data.list.length; i++) {
             res.data.list[i].up_time = this.timestampToTime(
               res.data.list[i].up_time
             );
           }
           this.BasicDataList = res.data.list;
+          // console.log("此处要获取的数据为+" + this.BasicDataList);
           this.totalCount = res.data.totalCount;
-           this.$message({
+          this.$message({
             type: "success",
-            message: "查询成功"
+            message: "查询成功",
           });
         })
-        .catch(res => {
+        .catch((res) => {
           this.$message({
             type: "warning",
-            message: "请先选择分类体系"
+            message: "请先选择分类体系",
           });
         });
     },
+
     //删除
-    // deleteBasicData(id) {
-    //   this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       this.$http
-    //         .get("/DMServlet", {
-    //           params: {
-    //             method: "deleteDataById",
-    //             id: id
-    //           }
-    //         })
-    //         .then(res => {
-    //           if (res.data["删除基础信息表中记录:"]) {
-    //             this.$message({
-    //               type: "success",
-    //               message: "删除成功!"
-    //             });
-    //             this.getBasicData();
-    //           } else {
-    //             this.$message.error("删除失败！");
-    //           }
-    //         });
-    //     })
-    //     .catch(() => {
-    //       this.$message({
-    //         type: "info",
-    //         message: "已取消删除"
-    //       });
-    //     });
-    // },
+    deleteBasicData(id) {
+      this.$confirm("此操作将永久删除该文件且不可恢复， 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true,
+      })
+        .then(() => {
+          this.$http
+            .post("http://172.27.53.95:8086/manage/result_delete", {
+              result_id: id,
+            })
+            .then((response) => {
+              // console.log("返回的值列表为:"),
+              //   console.log(response.data.list),
+              //   console.log(response);
+              for (var i = 0; i < response.data.list.length; i++) {
+                response.data.list[i].data_time = this.timestampToTime(
+                  response.data.list[i].data_time
+                );
+                //打印出返回值:
+              }
+              this.getBasicData(); //再次调用更新数据列表
+            })
+            .catch((response) => {
+              console.log("错误" + response);
+            });
+          alert("删除的该项列表数据id为：" + id);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+
     // 获取数据
     getBasicData() {
       this.$http
@@ -238,10 +265,10 @@ export default {
           params: {
             method: "getproductdata",
             currentPage: this.currentPage,
-            currentCount: this.currentCount
-          }
+            currentCount: this.currentCount,
+          },
         })
-        .then(res => {
+        .then((res) => {
           // for (var i = 0; i < res.data.list.length; i++) {
           //   res.data.list[i].up_time = this.timestampToTime(
           //     res.data.list[i].up_time
@@ -254,7 +281,7 @@ export default {
     //预览
     showDialog(id) {
       console.log(id);
-      this.imgurl=id
+      this.imgurl = id;
       // this.$http
       //   .get("/productdata", {
       //     params: {
@@ -274,7 +301,7 @@ export default {
     },
     deleteImage(html) {
       let nowimgs = this.getSrc(html);
-      let merge = nowimgs.filter(function(v, i, arr) {
+      let merge = nowimgs.filter(function (v, i, arr) {
         return arr.indexOf(v) === arr.lastIndexOf(v);
       });
       for (let x in merge) {
@@ -284,10 +311,10 @@ export default {
           .get("/NewsServlet", {
             params: {
               method: "deletePictures",
-              picNames: imgName
-            }
+              picNames: imgName,
+            },
           })
-          .then(res => {});
+          .then((res) => {});
       }
     },
     getSrc(html) {
@@ -314,12 +341,12 @@ export default {
           : date.getMonth() + 1) + "-";
       var D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
       return Y + M + D;
-    }
+    },
   },
   mounted() {
     this.getBasicData();
   },
-  created() {}
+  created() {},
 };
 </script>
 <style >
@@ -341,7 +368,7 @@ export default {
   margin-top: 15px;
   font-size: 12px;
 }
-.img{
-  padding:0 
+.img {
+  padding: 0;
 }
 </style>

@@ -186,7 +186,7 @@ export default {
         return;
       } else {
         this.$http
-          .post("http://172.27.53.95:8086/updatechecklist", {
+          .post("/updatechecklist", {
             id: id, //影像id
             username: user_name, //管理员名
             resultcheck: this.state[id], //审核结果
@@ -265,13 +265,13 @@ export default {
     getChecklist() {
       // console.log(user_name);
       this.$http
-        .get("http://172.27.53.95:8086/checklistdata", {
+        .get("/checklistdata", {
           params: {},
         })
         .then((res) => {
           for (var i = 0; i < res.data.list.length; i++) {
-            res.data.list[i].data_time = this.timestampToTime(
-              res.data.list[i].data_time
+            res.data.list[i].post_time = this.timestampToTime(
+              res.data.list[i].post_time
             );
           }
           // console.log(res);

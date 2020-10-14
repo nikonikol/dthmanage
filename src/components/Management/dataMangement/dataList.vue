@@ -28,7 +28,11 @@
               <el-option label="主题词" value="topic_w1"></el-option>
               <el-option label="上传者姓名" value="uper_name"></el-option>
             </el-select>
-            <el-button slot="append" icon="el-icon-search" @click="searchData()"></el-button>
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="searchData()"
+            ></el-button>
           </el-input>
         </el-col>
       </el-row>
@@ -40,6 +44,7 @@
         <el-table-column prop="satelite" label="数据源"></el-table-column>
         <el-table-column prop="raster_url" label="影像路径"></el-table-column>
         <el-table-column prop="data_time" label="数据时间"></el-table-column>
+        <!-- <el-table-column prop="raster_id" label="数据编号"></el-table-column> -->
         <!-- <el-table-column prop="uper_name" label="数据贡献者"></el-table-column>
         <el-table-column prop="uper_place" label="工作单位"></el-table-column> -->
         <el-table-column label="操作">
@@ -57,7 +62,7 @@
                 size="mini"
                 @click="showDialog(scope.row.id)"
               ></el-button>
-            </el-tooltip>-->
+            </el-tooltip> -->
             <el-tooltip
               class="item"
               effect="dark"
@@ -70,7 +75,7 @@
                 icon="el-icon-delete"
                 size="mini"
                 :disabled="false"
-                @click="deleteBasicData(scope.row.id)"
+                @click="deleteBasicData(scope.row.raster_id)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -82,7 +87,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5,6,7,8,9,10]"
+        :page-sizes="[5, 6, 7, 8, 9, 10]"
         :page-size="currentCount"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount"
@@ -90,9 +95,14 @@
     </el-card>
 
     <!-- 新闻查看 -->
-    <el-dialog title="新闻预览" :visible.sync="DialogVisible" :close-on-click-modal="false" width="60%">
+    <!-- <el-dialog
+      title="新闻预览"
+      :visible.sync="DialogVisible"
+      :close-on-click-modal="false"
+      width="60%"
+    >
       <div v-html="newsContent"></div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -171,30 +181,37 @@ export default {
     },
     //删除
     deleteBasicData(id) {
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该文件且不可恢复， 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
+        center: true,
       })
         .then(() => {
           this.$http
-            .get("/DMServlet", {
-              params: {
-                method: "deleteDataById",
-                id: id,
-              },
+            .post("http://172.27.53.95:8086/manage/raster_delete", {
+              raster_id: id,
             })
-            .then((res) => {
-              if (res.data["删除基础信息表中记录:"]) {
-                this.$message({
-                  type: "success",
-                  message: "删除成功!",
-                });
-                this.getBasicData();
-              } else {
-                this.$message.error("删除失败！");
+            .then((response) => {
+              // console.log("返回的值列表为:"),
+              //   console.log(response.data.list),
+              //   console.log(response);
+              for (var i = 0; i < response.data.list.length; i++) {
+                response.data.list[i].data_time = this.timestampToTime(
+                  response.data.list[i].data_time
+                );
+                //打印出返回值:
               }
+              this.getBasicData(); //再次调用更新数据列表
+            })
+            .catch((response) => {
+              console.log("错误" + response);
             });
+          alert("删除的该项列表数据id为：" + id);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
         })
         .catch(() => {
           this.$message({
@@ -222,6 +239,7 @@ export default {
           //   );
           // }
           this.BasicDataList = res.data.list;
+          // console.log("此处请求数据+" + this.BasicDataList.raster_id);
           this.totalCount = res.data.totalCount;
         });
     },
