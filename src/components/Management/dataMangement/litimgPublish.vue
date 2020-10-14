@@ -309,6 +309,7 @@ export default {
                     });
                   });
                   _this.status="success"
+                  _this.reloaddata()
               } else if (_this.Classvalue == "标准产品的快视图生成") {
                 _this.$http
                   .post("/keepProduct_image_logs", {
@@ -321,7 +322,10 @@ export default {
                     });
                   });
                   _this.status="success"
+                  _this.reloaddata()
+                
               }
+              
               // console.log("执行成功..............................");
             } else {
               console.log("执行失败........................");
@@ -360,16 +364,26 @@ export default {
                   //     message: "数据已入库",
                   //   });
                 });
+                   _this.reloaddata()
             }
+           
           })
           .catch((response) => {
             _this.$alert(response, "请求错误", {
               confirmButtonText: "确定",
             });
           });
+          
       }
 
       getStatus(statusURL);
+    },
+    //重置数据
+    reloaddata(){
+      alert(1)
+          this.rasterList=[];
+          this.showprogress = false;
+          this.status=""
     },
     //获取未生成快视图的数据
     getrasterList() {
