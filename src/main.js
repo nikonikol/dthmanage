@@ -11,8 +11,10 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 // 配置axios请求
 import axios from 'axios'
-axios.defaults.baseURL = 'http://101.37.83.223:7008'
-window.imgBaseUrl='http://101.37.83.223:7007'
+axios.defaults.baseURL = 'http://10.111.117.6:8086'
+window.imgBaseUrl='http://10.111.117.6:9191'
+// axios.defaults.baseURL = 'http://101.37.83.223:7008'
+// window.imgBaseUrl='http://101.37.83.223:7007'
 // axios.defaults.baseURL = 'http://101.37.83.223:8181'
 Vue.prototype.$http = axios
 

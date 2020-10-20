@@ -60,7 +60,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[1, 5, 10]"
+        :page-sizes="[1, 5, 10,20,50]"
         :page-size="currentCount"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount"
@@ -213,6 +213,7 @@ export default {
           console.log(jobId, progress);
           this.taskStatue = "";
           var statusURL = window.imgBaseUrl + "/ese/jobs/" + jobId + "/status";
+          console.log(statusURL);
           this.poll(statusURL);
           // if (res.data.code == 1) {
           //   this.$message({
@@ -345,7 +346,7 @@ export default {
               productType = 0;
               JobId = json.jobId;
               is_success = 0;
-              task_log = "水域面积提取执行失败";
+              task_log = "快视图失败";
               t_user_id = 1;
 
               //http://localhost:8086/keep_logs
@@ -380,10 +381,7 @@ export default {
     },
     //重置数据
     reloaddata(){
-      alert(1)
-          this.rasterList=[];
-          this.showprogress = false;
-          this.status=""
+        Object.assign(this.$data, this.$options.data())
     },
     //获取未生成快视图的数据
     getrasterList() {
