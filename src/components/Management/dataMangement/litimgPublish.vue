@@ -380,10 +380,7 @@ export default {
     },
     //重置数据
     reloaddata(){
-      alert(1)
-          this.rasterList=[];
-          this.showprogress = false;
-          this.status=""
+          Object.assign(this.$data, this.$options.data())
     },
     //获取未生成快视图的数据
     getrasterList() {
