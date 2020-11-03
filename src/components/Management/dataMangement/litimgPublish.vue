@@ -260,9 +260,7 @@ export default {
               let litimgurl_arr2 = [];
               for (let i = 0; i < _this.multipleSelection.length; i++) {
                 let str =
-                  "json.results[0].value.elements.out_opt" +
-                  i +
-                  ".dehydratedForm";
+                  "json.results[0].value.elements.out_opt" + i + ".dehydratedForm";
                 console.log(eval(str).elements.LocalPngFileURL.dehydratedForm);
                 console.log(eval(str).elements.MapExtent.dehydratedForm[0][0]);
                 let url = eval(str).elements.LocalPngFileURL.dehydratedForm;
