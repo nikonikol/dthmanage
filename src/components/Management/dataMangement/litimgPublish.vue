@@ -116,7 +116,9 @@ export default {
   },
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+
+  },
   methods: {
     //处理分类的变化
     handleClassChange(value) {
@@ -184,6 +186,14 @@ export default {
     resFiled() {
       rasterList = [];
     },
+    //临时入库函数
+    litimg_pub(){
+      alert("临时入库")
+      let jobid = 3012
+      //this.multipleSelection.length = 175
+      let url =window.imgBaseUrl + "/ese/jobs/" + jobid + "/status";
+      this.poll(url)
+    },
     // 发布数据
     publicData() {
       //判断是否必选的已选完。
@@ -239,6 +249,7 @@ export default {
           .get(statusURL)
           .then((response) => {
             let json = response.data;
+            console.log(json);
             if (
               json.jobStatus === "esriJobSubmitted" ||
               json.jobProgress == 0 ||
@@ -261,8 +272,12 @@ export default {
               for (let i = 0; i < _this.multipleSelection.length; i++) {
                 let str =
                   "json.results[0].value.elements.out_opt" + i + ".dehydratedForm";
+                  if(eval(str)==null){
+                    continue;
+                  }
                 console.log(eval(str).elements.LocalPngFileURL.dehydratedForm);
                 console.log(eval(str).elements.MapExtent.dehydratedForm[0][0]);
+                
                 let url = eval(str).elements.LocalPngFileURL.dehydratedForm;
                 let maxplat = eval(str).elements.MapExtent.dehydratedForm[0][0];
                 let maxplon = eval(str).elements.MapExtent.dehydratedForm[0][1];
