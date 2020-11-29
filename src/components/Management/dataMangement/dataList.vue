@@ -24,8 +24,8 @@
               @change="selectChange"
             >
               <el-option label="资源名称" value="NAME"></el-option>
-              <el-option label="空间位置" value="sploc"></el-option>
-              <el-option label="主题词" value="topic_w1"></el-option>
+              <el-option label="卫星数据源" value="satelite"></el-option>
+              <!-- <el-option label="时间" value="topic_w1"></el-option> -->
               <el-option label="上传者姓名" value="uper_name"></el-option>
             </el-select>
             <el-button

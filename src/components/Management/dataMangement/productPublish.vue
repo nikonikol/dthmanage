@@ -58,7 +58,7 @@
               ></el-option>
             </el-select>
           </el-col>
-          <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="2">
+          <!-- <el-col :xs="4" :sm="4" :md="4" :lg="2" :xl="2">
             <span class="requiredItem">时间（可选）</span>
           </el-col>
           <el-col :xs="4" :sm="4" :md="4" :lg="6" :xl="6">
@@ -70,7 +70,7 @@
                 :value="item.filename"
               ></el-option>
             </el-select>
-          </el-col>
+          </el-col> -->
         </el-row>
       </div>
 

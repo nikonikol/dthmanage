@@ -3,7 +3,7 @@
     <!-- 头部区域 -->
     <el-header>
       <div class="img-header">
-        <img src="../../assets/logo.png" alt />
+        <!-- <img src="../../assets/logo.png" alt /> -->
         <span class="span-title">
           洞庭湖数据管理平台
         </span>
