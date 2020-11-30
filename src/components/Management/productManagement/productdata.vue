@@ -24,6 +24,7 @@
             >
               <!--             @change="selectChange" -->
               <el-option label="产品类型" value="product_type"></el-option>
+              <el-option label="数据名称" value="data_name"></el-option>
               <!-- <el-option label="数据格式" value="data_type"></el-option> -->
               <el-option label="数据功能贡献者" value="user_name"></el-option>
               <!-- <el-option label="上传者姓名" value="uper_name"></el-option> -->
@@ -94,7 +95,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 6, 7, 8, 9, 10]"
+        :page-sizes="[5, 10,20,50,100,200]"
         :page-size="currentCount"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount"
@@ -138,7 +139,8 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getBasicData();
+      this.searchData();
+      // this.getBasicData();
     },
 
     //格式转换
@@ -201,7 +203,6 @@ export default {
           this.BasicDataList = res.data.list;
           // console.log("此处要获取的数据为+" + this.BasicDataList);
           this.totalCount = res.data.totalCount;
-          alert(this.totalCount);
           this.$message({
             type: "success",
             message: "查询成功",
@@ -243,7 +244,7 @@ export default {
             .catch((response) => {
               console.log("错误" + response);
             });
-          alert("删除的该项列表数据id为：" + id);
+          // alert("删除的该项列表数据id为：" + id);
           this.$message({
             type: "success",
             message: "删除成功!",

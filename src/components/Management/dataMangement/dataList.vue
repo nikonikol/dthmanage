@@ -7,7 +7,7 @@
       <el-breadcrumb-item>数据列表</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card class="box-card">
-      <el-row :gutter="10">
+      <!-- <el-row :gutter="10">
         <el-col :span="8">
           <el-input
             :placeholder="taggleContentTips"
@@ -25,7 +25,6 @@
             >
               <el-option label="资源名称" value="NAME"></el-option>
               <el-option label="卫星数据源" value="satelite"></el-option>
-              <!-- <el-option label="时间" value="topic_w1"></el-option> -->
               <el-option label="上传者姓名" value="uper_name"></el-option>
             </el-select>
             <el-button
@@ -35,7 +34,7 @@
             ></el-button>
           </el-input>
         </el-col>
-      </el-row>
+      </el-row> -->
 
       <!-- 数据列表展示区域 -->
       <el-table :data="BasicDataList" border stripe>
@@ -87,7 +86,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 6, 7, 8, 9, 10]"
+        :page-sizes="[5, 10, 20,50,100,200]"
         :page-size="currentCount"
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalCount"
@@ -154,76 +153,39 @@ export default {
       }
     },
     // 查询数据
-    searchData() {
-      this.$http
-        .get("/DMServlet", {
-          params: {
-            method: "showDataByKey",
-            value: this.key,
-            key: this.selectValue,
-          },
-        })
-        .then((res) => {
-          for (var i = 0; i < res.data.list.length; i++) {
-            res.data.list[i].up_time = this.timestampToTime(
-              res.data.list[i].up_time
-            );
-          }
-          this.BasicDataList = res.data.list;
-          this.totalCount = res.data.totalCount;
-        })
-        .catch((res) => {
-          this.$message({
-            type: "warning",
-            message: "请先选择分类体系",
-          });
-        });
-    },
-    //删除
-    deleteBasicData(id) {
-      this.$confirm("此操作将永久删除该文件且不可恢复， 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true,
-      })
-        .then(() => {
-          this.$http
-            .post("http://172.27.53.95:8086/manage/raster_delete", {
-              raster_id: id,
-            })
-            .then((response) => {
-              // console.log("返回的值列表为:"),
-              //   console.log(response.data.list),
-              //   console.log(response);
-              for (var i = 0; i < response.data.list.length; i++) {
-                response.data.list[i].data_time = this.timestampToTime(
-                  response.data.list[i].data_time
-                );
-                //打印出返回值:
-              }
-              this.getBasicData(); //再次调用更新数据列表
-            })
-            .catch((response) => {
-              console.log("错误" + response);
-            });
-          alert("删除的该项列表数据id为：" + id);
-          this.$message({
-            type: "success",
-            message: "删除成功!",
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
+    // searchData() {
+    //   this.$http
+    //     .get("/DMServlet", {
+    //       params: {
+    //         method: "showDataByKey",
+    //         value: this.key,
+    //         key: this.selectValue,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       for (var i = 0; i < res.data.list.length; i++) {
+    //         res.data.list[i].up_time = this.timestampToTime(
+    //           res.data.list[i].up_time
+    //         );
+    //         res.data.list[i].data_time = this.timestampToTime(
+    //           res.data.list[i].data_time
+    //         );
+    //       }
+    //       this.BasicDataList = res.data.list;
+    //       this.totalCount = res.data.totalCount;
+    //     })
+    //     .catch((res) => {
+    //       this.$message({
+    //         type: "warning",
+    //         message: "请先选择分类体系",
+    //       });
+    //     });
+    // },
+
     // 获取数据
     getBasicData() {
       this.$http
-        .get("/datamanage/search", {
+        .get("/datamanage/rastersearch", {
           params: {
             method: "",
             startTime: "",
@@ -233,14 +195,15 @@ export default {
           },
         })
         .then((res) => {
-          // for (var i = 0; i < res.data.list.length; i++) {
-          //   res.data.list[i].data_time  = this.timestampToTime(
-          //     res.data.list[i].data_time
-          //   );
-          // }
+          for (var i = 0; i < res.data.list.length; i++) {
+            res.data.list[i].data_time  = this.timestampToTime(
+              res.data.list[i].data_time
+            );
+          }
           this.BasicDataList = res.data.list;
           // console.log("此处请求数据+" + this.BasicDataList.raster_id);
           this.totalCount = res.data.totalCount;
+          console.log(res.data);
         });
     },
     //预览

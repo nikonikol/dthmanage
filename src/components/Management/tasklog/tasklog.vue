@@ -27,7 +27,7 @@
         <el-table-column prop="user_name" label="提交者昵称"></el-table-column>
         <el-table-column prop="data_time" label="完成时间"></el-table-column>
         <el-table-column prop="data_type" label="数据类型"></el-table-column>
-        <el-table-column prop="is_open" label="是否公开" :formatter="formatBoolean"></el-table-column>
+        <!-- <el-table-column prop="is_open" label="是否公开" :formatter="formatBoolean"></el-table-column> -->
         <el-table-column prop="is_success" label="是否成功" :formatter="formatBoolean"></el-table-column>
         <el-table-column prop="task_log" label="任务日志"></el-table-column>
         <!-- <el-table-column label="操作">
